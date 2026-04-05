@@ -39,8 +39,8 @@ export default function CanaPage() {
         supabase.from('plots').select('*,cuts(*)').eq('crop_type','cana').is('deleted_at',null),
         supabase.from('cuts').select('*').is('deleted_at',null),
       ])
-      if (s.status === 'fulfilled') setSuertes(s.value.data)
-      if (c.status === 'fulfilled') setCuts(c.value.data)
+      if (s.status === 'fulfilled') setSuertes(s.value.data ?? [])
+      if (c.status === 'fulfilled') setCuts(c.value.data ?? [])
     } finally { setLoading(false) }
   }
 

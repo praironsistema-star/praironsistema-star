@@ -37,9 +37,9 @@ export default function OdsPage() {
         supabase.from('tasks').select('*').eq('type','ods').is('deleted_at',null),
         supabase.from('ods_objectives').select('count'),
       ])
-      if (obj.status === 'fulfilled') setObjectives(obj.value.data)
-      if (t.status === 'fulfilled') setTasks(t.value.data)
-      if (dash.status === 'fulfilled') setDashboard(dash.value.data)
+      if (obj.status === 'fulfilled') setObjectives(obj.value.data ?? [])
+      if (t.status === 'fulfilled') setTasks(t.value.data ?? [])
+      if (dash.status === 'fulfilled') setDashboard(dash.value.data ?? [])
     } finally { setLoading(false) }
   }
 

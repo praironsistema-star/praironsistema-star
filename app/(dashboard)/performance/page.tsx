@@ -25,7 +25,7 @@ export default function PerformancePage() {
           tasks:     tasks.status === 'fulfilled' ? tasks.value.data : [],
           inventory: inventory.status === 'fulfilled' ? inventory.value.data : [],
         })
-        if (ai.status === 'fulfilled') setAiData(ai.value.data)
+        if (ai.status === 'fulfilled') setAiData(ai.value.data ?? [])
       } finally { setLoading(false) }
     }
     load()

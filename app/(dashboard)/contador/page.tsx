@@ -32,9 +32,9 @@ export default function ContadorPage() {
           supabase.from('finance_costs').select('*').order('date',{ascending:false}),
           supabase.from('labor_records').select('*').order('date',{ascending:false}),
         ])
-        if (s.status === 'fulfilled') setSummary(s.value.data)
-        if (c.status === 'fulfilled') setCostReport(c.value.data)
-        if (n.status === 'fulfilled') setNomina(n.value.data)
+        if (s.status === 'fulfilled') setSummary(s.value.data ?? [])
+        if (c.status === 'fulfilled') setCostReport(c.value.data ?? [])
+        if (n.status === 'fulfilled') setNomina(n.value.data ?? [])
       } finally { setLoading(false) }
     }
     load()

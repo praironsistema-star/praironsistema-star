@@ -39,8 +39,8 @@ export default function AcuiculturaPage() {
         supabase.from('aqua_ponds').select('*').is('deleted_at',null),
         supabase.from('aqua_batches').select('*').is('deleted_at',null),
       ])
-      if (p.status === 'fulfilled') setPonds(p.value.data)
-      if (b.status === 'fulfilled') setBatches(b.value.data)
+      if (p.status === 'fulfilled') setPonds(p.value.data ?? [])
+      if (b.status === 'fulfilled') setBatches(b.value.data ?? [])
     } finally { setLoading(false) }
   }
 

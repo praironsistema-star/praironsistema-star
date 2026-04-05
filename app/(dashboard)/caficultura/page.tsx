@@ -37,8 +37,8 @@ export default function CaficulturaPage() {
         supabase.from('plots').select('*,harvests(*)').eq('crop_type','cafe').is('deleted_at',null),
         supabase.from('harvests').select('*').is('deleted_at',null),
       ])
-      if (p.status === 'fulfilled') setPlots(p.value.data)
-      if (h.status === 'fulfilled') setHarvests(h.value.data)
+      if (p.status === 'fulfilled') setPlots(p.value.data ?? [])
+      if (h.status === 'fulfilled') setHarvests(h.value.data ?? [])
     } finally { setLoading(false) }
   }
 

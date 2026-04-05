@@ -47,8 +47,8 @@ export default function TareoPage() {
         supabase.from('workers').select('*').is('deleted_at',null),
         supabase.from('labor_records').select('*').is('deleted_at',null),
       ])
-      if (w.status === 'fulfilled') setWorkers(w.value.data)
-      if (r.status === 'fulfilled') setRecords(r.value.data)
+      if (w.status === 'fulfilled') setWorkers(w.value.data ?? [])
+      if (r.status === 'fulfilled') setRecords(r.value.data ?? [])
     } finally { setLoading(false) }
   }
 

@@ -57,8 +57,8 @@ export default function TeamPage() {
         supabase.from('labor_records').select('*').order('created_at',{ascending:false}),
         supabase.from('invitations').select('*').eq('status','pending'),
       ])
-      if (nom.status === 'fulfilled') setMembers(nom.value.data)
-      if (inv.status === 'fulfilled') setInvitations(inv.value.data)
+      if (nom.status === 'fulfilled') setMembers(nom.value.data ?? [])
+      if (inv.status === 'fulfilled') setInvitations(inv.value.data ?? [])
     } finally { setLoading(false) }
   }
 
