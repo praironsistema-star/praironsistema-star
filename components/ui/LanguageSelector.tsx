@@ -1,18 +1,24 @@
 'use client';
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
 import { useI18n, type Locale } from '@/lib/i18n';
+import api from '@/lib/api';
 
 const LANGUAGES = [
   { code: 'es' as Locale, label: 'Español', flag: '🇨🇴' },
   { code: 'en' as Locale, label: 'English', flag: '🇺🇸' },
-  { code: 'pt' as Locale, label: 'Português', flag: '🇧🇷' },
+  { code: 'pt' as Locale, label: 'Português', flag: '🇧��' },
 ];
 
 export default function LanguageSelector() {
   const { locale, setLocale } = useI18n();
   const [open, setOpen] = useState(false);
   const currentLang = LANGUAGES.find(l => l.code === locale) || LANGUAGES[0];
+
+  async function handleChange(code: Locale) {
+    setLocale(code);
+    setOpen(false);
+    try { await api.patch('/users/locale', { preferredLocale: code }); } catch(_) {}
+  }
 
   return (
     <div style={{ position: 'relative' }}>
@@ -27,7 +33,7 @@ export default function LanguageSelector() {
           <div onClick={() => setOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 99 }} />
           <div style={{ position: 'absolute', right: 0, top: '110%', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 10, padding: 6, zIndex: 100, minWidth: 140, boxShadow: '0 4px 20px rgba(0,0,0,0.12)' }}>
             {LANGUAGES.map(lang => (
-              <button key={lang.code} onClick={async () => { setLocale(lang.code); setOpen(false); try { const { data: { user } } = await supabase.auth.getUser(); if (user) await supabase.from('users').update({ preferred_locale: lang.code }).eq('id', user.id); } catch(_){} }}
+              <button key={lang.code} onClick={() => handleChange(lang.code)}
                 style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '8px 12px', border: 'none', borderRadius: 6, background: lang.code === locale ? 'var(--bg-secondary)' : 'transparent', cursor: 'pointer', fontSize: 13, color: 'var(--color-text-primary)', fontWeight: lang.code === locale ? 600 : 400 }}>
                 <span>{lang.flag}</span>
                 <span>{lang.label}</span>
