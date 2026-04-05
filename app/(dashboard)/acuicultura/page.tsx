@@ -1,4 +1,5 @@
 'use client'
+import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 import { toastSuccess, toastError } from '@/components/ui/Toast'
