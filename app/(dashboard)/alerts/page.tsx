@@ -26,7 +26,6 @@ export default function AlertsPage() {
 
   useEffect(() => {
     supabase.from('alerts').select('*').order('created_at', { ascending: false })
-      .then((r) => { setAlerts(r.data || []); setLoading(false) })
   }, [])
 
   async function markRead(id: string) {

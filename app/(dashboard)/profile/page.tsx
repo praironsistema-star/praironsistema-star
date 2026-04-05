@@ -15,9 +15,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getUser().then(async({data:{user}})=>{ const {data:p} = await supabase.from('profiles').select('*').eq('id',user?.id||'').single(); if(p) setProfile(p) })
-      .then(r => setProfile(r.data))
-      .finally(() => setLoading(false))
+    supabase.auth.getUser().then(async({data:{user}})=>{ const {data:p} = await supabase.from('profiles').select('*').eq('id',user?.id||'').single(); if(p) setProfile(p); setLoading(false) })
   }, [])
 
   if (loading) {

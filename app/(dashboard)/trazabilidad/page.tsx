@@ -41,7 +41,7 @@ export default function TrazabilidadPage() {
     try {
       const { supabase } = await import('@/lib/supabase')
       const { data: res } = await supabase.from('traceability_lots').select('*,events:traceability_events(*)').is('deleted_at',null)
-      setLots(res.data)
+      setLots(res ?? [])
     } finally { setLoading(false) }
   }
 

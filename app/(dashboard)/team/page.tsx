@@ -70,7 +70,7 @@ export default function TeamPage() {
     try {
       const { supabase } = await import('@/lib/supabase')
       const res = await supabase.from('invitations').insert(form)
-      setInviteResult(res.data)
+      setInviteResult(res.data ?? [])
       load()
     } catch (err: any) {
       setError(err.response?.data?.message || 'Error al enviar invitación')

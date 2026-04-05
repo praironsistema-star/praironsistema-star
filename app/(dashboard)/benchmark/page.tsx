@@ -11,7 +11,7 @@ export default function BenchmarkPage() {
     setLoading(true); setError('')
     try {
       const r = { data: { metrics: [] } } // pendiente edge function
-      setData(r.data)
+      setData(r.data ?? [])
     } catch { setError('Error cargando benchmark') }
     finally { setLoading(false) }
   }

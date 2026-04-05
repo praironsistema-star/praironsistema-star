@@ -252,7 +252,7 @@ export default function FarmsPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const body = { ...form, totalArea: parseFloat(form.totalArea) }
+    const body = { ...form, totalArea: parseFloat(form.totalArea) } as any
     const { supabase } = await import('@/lib/supabase')
     if (modal === 'create') await supabase.from('farms').insert({ name:body.name, sector:body.sector?.toLowerCase()||'ganaderia', hectares:body.hectares, country_code:'CO' })
     else await supabase.from('farms').update({ name:body.name, sector:body.sector?.toLowerCase()||'ganaderia', hectares:body.hectares }).eq('id', selected.id)

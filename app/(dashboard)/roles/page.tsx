@@ -32,8 +32,6 @@ export default function RolesPage() {
 
   useEffect(() => {
     supabase.from('roles').select('*').then(r => setRoles(r.data||[]))
-      .then(r => setRoles(r.data))
-      .finally(() => setLoading(false))
   }, [])
 
   function togglePerm(mod: string, action: string) {
@@ -81,7 +79,7 @@ export default function RolesPage() {
       if (editing) {
         const { supabase } = await import('@/lib/supabase')
       const r = await supabase.from('roles').update({name,permissions}).eq('id',editing.id)
-        setRoles(roles.map(x => x.id === editing.id ? { ...x, ...r.data } : x))
+        setRoles(roles.map(x => x.id === editing.id ? { ...x, ...(r.data ?? {}) } : x))
         toastSuccess('Rol actualizado correctamente')
       } else {
         const { supabase } = await import('@/lib/supabase')

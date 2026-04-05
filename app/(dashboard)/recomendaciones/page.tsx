@@ -25,7 +25,7 @@ export default function RecomendacionesPage() {
     setError('')
     try {
       const r = { data: { recommendations: [] } } // pendiente edge function
-      setResult(r.data)
+      setResult(r.data ?? [])
     } catch {
       setError('Error cargando recomendaciones. Intenta de nuevo.')
     } finally { setLoading(false) }

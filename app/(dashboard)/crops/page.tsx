@@ -26,8 +26,7 @@ export default function CropsPage() {
       const { supabase } = await import('@/lib/supabase')
       const { data: c } = await supabase.from('crops').select('*').is('deleted_at',null)
       const { data: f } = await supabase.from('farms').select('id,name').is('deleted_at',null)
-      setCrops(c||[]); setFarms(f||[])
-      setCrops(c.data); setFarms(f.data)
+      setCrops(c || []); setFarms(f || [])
     } finally { setLoading(false) }
   }
 
@@ -37,7 +36,7 @@ export default function CropsPage() {
     setLoadingPred(true)
     try {
       const r = { data: { suggestions: [] } } // pendiente edge function
-      setPredictions(r.data)
+      setPredictions(r.data?.suggestions ?? [])
       setShowPred(true)
     } catch {
       toastError('Error cargando predicciones')

@@ -36,9 +36,7 @@ export default function CalendarioPage() {
   const [selected, setSelected] = useState<Date | null>(null)
 
   useEffect(() => {
-    supabase.from('tasks').select('*').is('deleted_at',null).then(r => setTasks(r.data||[]))
-      .then(r => setTasks(r.data))
-      .finally(() => setLoading(false))
+    supabase.from('tasks').select('*').is('deleted_at',null)
   }, [])
 
   // Navega al mes anterior

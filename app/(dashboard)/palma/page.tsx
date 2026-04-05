@@ -41,8 +41,8 @@ export default function PalmaPage() {
         supabase.from('palm_extractions').select('*').is('deleted_at',null),
         supabase.from('palm_lab').select('*').is('deleted_at',null),
       ])
-      setDashboard(d.data); setPlots(p.data); setHarvests(h.data)
-      setExtr(e.data); setLab(l.data)
+      setDashboard(d.data ?? []); setPlots(p.data ?? []); setHarvests(h.data ?? [])
+      setExtr(e.data ?? []); setLab(l.data ?? [])
     } finally { setLoading(false) }
   }
 

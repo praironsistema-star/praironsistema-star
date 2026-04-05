@@ -69,14 +69,12 @@ export default function SettingsPage() {
     if (activeTab === 'actividad' && activity.length === 0) {
       setLoadingActivity(true)
       supabase.from('audit_log').select('*').order('created_at', { ascending: false }).limit(30)
-        .then(r => setActivity(r.data || []))
-        .finally(() => setLoadingActivity(false))
+        .then((r) => { setActivity(r.data || []); setLoadingActivity(false) })
     }
     if (activeTab === 'equipo' && team.length === 0) {
       setLoadingTeam(true)
       supabase.from('profiles').select('*')
-        .then(r => setTeam(r.data || []))
-        .finally(() => setLoadingTeam(false))
+        .then((r) => { setTeam(r.data || []); setLoadingTeam(false) })
     }
   }, [activeTab])
 

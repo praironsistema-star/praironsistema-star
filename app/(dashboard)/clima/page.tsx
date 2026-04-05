@@ -61,7 +61,7 @@ export default function ClimaPage() {
     setLoading(true)
     setError('')
     fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`).then(r=>r.json())
-      .then(r => setWeather(r.data))
+      .then(r => setWeather(r.data ?? []))
       .catch(() => setError('No se pudo cargar el clima. Intenta de nuevo.'))
       .finally(() => setLoading(false))
   }, [city])

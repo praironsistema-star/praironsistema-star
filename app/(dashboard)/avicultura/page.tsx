@@ -47,9 +47,9 @@ export default function AviculturaPage() {
         supabase.from('poultry_houses').select('*').is('deleted_at',null),
         supabase.from('poultry_batches').select('*').is('deleted_at',null),
       ])
-      setDashboard(d.data)
-      setHouses(h.data)
-      setBatches(b.data)
+      setDashboard(d.data ?? [])
+      setHouses(h.data ?? [])
+      setBatches(b.data ?? [])
     } finally { setLoading(false) }
   }
 
