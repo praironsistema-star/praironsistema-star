@@ -3,7 +3,6 @@ import { useI18n } from '@/lib/i18n'
 import { useEffect, useState } from 'react'
 import { getRole, getUser } from '@/lib/auth'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 
 const ROLES = ['gerente','supervisor','ingeniero','contador','veterinario','trabajador']
 const ROLE_COLORS: Record<string, { bg: string; color: string }> = {
@@ -54,8 +53,8 @@ export default function TeamPage() {
   async function load() {
     try {
       const [nom, inv] = await Promise.allSettled([
-        supabase.from('labor_records').select('*').order('created_at',{ascending:false}),
-        supabase.from('invitations').select('*').eq('status','pending'),
+        api.get('/labor_records'),
+        api.get('/invitations'),
       ])
       if (nom.status === 'fulfilled') setMembers(nom.value.data ?? [])
       if (inv.status === 'fulfilled') setInvitations(inv.value.data ?? [])
@@ -68,8 +67,7 @@ export default function TeamPage() {
     e.preventDefault()
     setError(''); setSubmitting(true)
     try {
-      const { supabase } = await import('@/lib/supabase')
-      const res = await supabase.from('invitations').insert(form)
+            const res = await api.post('/invitations', form)
       setInviteResult(res.data ?? [])
       load()
     } catch (err: any) {
@@ -79,8 +77,7 @@ export default function TeamPage() {
 
   async function handleCancel(id: string) {
     if (!confirm(t('team.cancel_confirm'))) return
-    const { supabase } = await import('@/lib/supabase')
-      await supabase.from('invitations').update({status:'cancelled'}).eq('id',id)
+          await api.patch('/invitations/id', {status:'cancelled'})
     load()
   }
 

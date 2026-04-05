@@ -1,5 +1,4 @@
 'use client'
-import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 import { toastSuccess, toastError } from '@/components/ui/Toast'
@@ -34,8 +33,8 @@ export default function CaficulturaPage() {
     setLoading(true)
     try {
       const [p, h] = await Promise.allSettled([
-        supabase.from('plots').select('*,harvests(*)').eq('crop_type','cafe').is('deleted_at',null),
-        supabase.from('harvests').select('*').is('deleted_at',null),
+        api.get('/plots'),
+        api.get('/harvests'),
       ])
       if (p.status === 'fulfilled') setPlots(p.value.data ?? [])
       if (h.status === 'fulfilled') setHarvests(h.value.data ?? [])
@@ -47,8 +46,7 @@ export default function CaficulturaPage() {
   async function savePlot(e: React.FormEvent) {
     e.preventDefault()
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('plots').insert({crop_type:'cafe',
+            await api.post('/plots', {crop_type:'cafe',
         ...plotForm,
         area: parseFloat(plotForm.area),
         plants: parseInt(plotForm.plants),
@@ -62,8 +60,7 @@ export default function CaficulturaPage() {
     e.preventDefault()
     if (!selPlot) return
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('harvests').insert({plot_id:selPlot.id,
+            await api.post('/harvests', {plot_id:selPlot.id,
         ...harvestForm,
         kgCereza: parseFloat(harvestForm.kgCereza),
         kgPergamino: harvestForm.kgPergamino ? parseFloat(harvestForm.kgPergamino) : null,
@@ -78,8 +75,7 @@ export default function CaficulturaPage() {
     const ok = await confirm({ title:'Eliminar lote', message:`¿Eliminar "${name}"?`, danger:true, confirmText:'Eliminar' })
     if (!ok) return
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('plots').update({deleted_at:new Date().toISOString()}).eq('id',id)
+            await api.patch('/plots/id', {deleted_at:new Date().toISOString()})
       loadAll(); toastSuccess('Lote eliminado')
     } catch { toastError('Error al eliminar') }
   }

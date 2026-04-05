@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 import { toastSuccess, toastError } from '@/components/ui/Toast'
 import { confirm } from '@/components/ui/Confirm'
 
@@ -39,8 +38,7 @@ export default function TrazabilidadPage() {
   async function loadAll() {
     setLoading(true)
     try {
-      const { supabase } = await import('@/lib/supabase')
-      const { data: res } = await supabase.from('traceability_lots').select('*,events:traceability_events(*)').is('deleted_at',null)
+            const { data: res } = await api.get('/traceability_lots')
       setLots(res ?? [])
     } finally { setLoading(false) }
   }
@@ -59,8 +57,7 @@ export default function TrazabilidadPage() {
   async function saveLot(e: React.FormEvent) {
     e.preventDefault()
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('traceability_lots').insert({
+            await api.post('/traceability_lots', {
         ...lotForm,
         quantity: parseFloat(lotForm.quantity),
       })
@@ -74,8 +71,7 @@ export default function TrazabilidadPage() {
     e.preventDefault()
     if (!selLot) return
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('traceability_events').insert({...eventForm,lot_id:selLot.id})
+            await api.post('/traceability_events', {...eventForm,lot_id:selLot.id})
       setEventModal(false)
       setEventForm({ date: new Date().toISOString().split('T')[0], type:'', description:'', responsible:'', notes:'' })
       loadAll(); toastSuccess('Evento registrado en la cadena')
@@ -86,8 +82,7 @@ export default function TrazabilidadPage() {
     const ok = await confirm({ title:'Eliminar lote', message:`¿Eliminar el lote "${code}"?`, danger:true, confirmText:'Eliminar' })
     if (!ok) return
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('traceability_lots').update({deleted_at:new Date().toISOString()}).eq('id',id)
+            await api.patch('/traceability_lots/id', {deleted_at:new Date().toISOString()})
       loadAll(); toastSuccess('Lote eliminado')
     } catch { toastError('Error al eliminar') }
   }

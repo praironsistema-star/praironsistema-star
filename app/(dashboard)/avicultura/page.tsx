@@ -1,5 +1,4 @@
 'use client'
-import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 import { toastSuccess, toastError, toastInfo } from '@/components/ui/Toast'
@@ -43,11 +42,11 @@ export default function AviculturaPage() {
     setLoading(true)
     try {
       const [d, h, b] = await Promise.all([
-        supabase.from('poultry_houses').select('count').is('deleted_at',null),
-        supabase.from('poultry_houses').select('*').is('deleted_at',null),
-        supabase.from('poultry_batches').select('*').is('deleted_at',null),
+        api.get('/poultry_houses'),
+        api.get('/poultry_houses'),
+        api.get('/poultry_batches'),
       ])
-      setDashboard(d.data ?? [])
+      setDashboard(d.data ?? {})
       setHouses(h.data ?? [])
       setBatches(b.data ?? [])
     } finally { setLoading(false) }
@@ -57,15 +56,13 @@ export default function AviculturaPage() {
 
   async function saveHouse(e: React.FormEvent) {
     e.preventDefault()
-    const { supabase } = await import('@/lib/supabase')
-      await supabase.from('poultry_houses').insert({...houseForm,capacity:parseInt(houseForm.capacity)})
+          api.post('/poultry_houses', {...houseForm,capacity:parseInt(houseForm.capacity)})
     setHouseModal(false); loadAll(); toastSuccess('Galpón creado')
   }
 
   async function saveBatch(e: React.FormEvent) {
     e.preventDefault()
-    const { supabase } = await import('@/lib/supabase')
-      await supabase.from('poultry_batches').insert({...batchForm,initial_quantity:parseInt(batchForm.initialQuantity)})
+          api.post('/poultry_batches', {...batchForm,initial_quantity:parseInt(batchForm.initialQuantity)})
     setBatchModal(false); loadAll(); toastSuccess('Lote creado')
   }
 
@@ -73,16 +70,13 @@ export default function AviculturaPage() {
     e.preventDefault()
     if (!selBatch) return
     if (recModal === 'mortality') {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('poultry_records').insert({...recForm,batch_id:selBatch.id,record_type:'mortality',quantity:parseInt(recForm.quantity)})
+            api.post('/poultry_records', {...recForm,batch_id:selBatch.id,record_type:'mortality',quantity:parseInt(recForm.quantity)})
       toastSuccess('Mortalidad registrada')
     } else if (recModal === 'feed') {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('poultry_records').insert({...recForm,batch_id:selBatch.id,record_type:'feed',quantity:parseFloat(recForm.quantity),cost:recForm.cost?parseFloat(recForm.cost):null})
+            api.post('/poultry_records', {...recForm,batch_id:selBatch.id,record_type:'feed',quantity:parseFloat(recForm.quantity),cost:recForm.cost?parseFloat(recForm.cost):null})
       toastSuccess('Alimentación registrada')
     } else if (recModal === 'health') {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('poultry_records').insert({...recForm,batch_id:selBatch.id,record_type:'health'})
+            api.post('/poultry_records', {...recForm,batch_id:selBatch.id,record_type:'health'})
       toastSuccess('Registro sanitario guardado')
     }
     setRecModal(null); loadAll()
@@ -91,8 +85,7 @@ export default function AviculturaPage() {
   async function deleteHouse(id: string, name: string) {
     const ok = await confirm({ title:'Eliminar galpón', message:`¿Eliminar "${name}"?`, danger: true, confirmText:'Eliminar' })
     if (!ok) return
-    const { supabase } = await import('@/lib/supabase')
-      await supabase.from('poultry_houses').update({deleted_at:new Date().toISOString()}).eq('id',id); loadAll(); toastSuccess('Galpón eliminado')
+          api.patch('/poultry_houses/id', {deleted_at:new Date().toISOString()}); loadAll(); toastSuccess('Galpón eliminado')
   }
 
   const TABS = ['dashboard','galpones','lotes']
@@ -137,10 +130,10 @@ export default function AviculturaPage() {
             <div>
               <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'12px', marginBottom:'20px' }}>
                 {[
-                  { label:'Galpones activos', value: dashboard.summary.totalHouses, color:'#036446' },
-                  { label:'Lotes en curso',   value: dashboard.summary.activeBatches, color:'#185fa5' },
-                  { label:'Aves totales',     value: dashboard.summary.totalAnimals.toLocaleString(), color:'#036446' },
-                  { label:'Mortalidad total', value: dashboard.summary.totalMortality, color: dashboard.summary.avgMortalityRate > 5 ? '#dc2626' : '#b45309' },
+                  { label:'Galpones activos', value: dashboard?.totalHouses ?? 0, color:'#036446' },
+                  { label:'Lotes en curso',   value: dashboard?.activeBatches ?? 0, color:'#185fa5' },
+                  { label:'Aves totales',     value: (dashboard?.totalAnimals ?? 0).toLocaleString(), color:'#036446' },
+                  { label:'Mortalidad total', value: dashboard?.totalMortality ?? 0, color: dashboard?.avgMortalityRate ?? 0 > 5 ? '#dc2626' : '#b45309' },
                 ].map(s => (
                   <div key={s.label} style={{ background:'#fff', border:'0.5px solid #e5e5e3', borderRadius:'10px', padding:'16px' }}>
                     <div style={{ fontSize:'26px', fontWeight:'500', color:s.color, fontFamily:'monospace', lineHeight:1 }}>{s.value}</div>
@@ -149,7 +142,7 @@ export default function AviculturaPage() {
                 ))}
               </div>
 
-              {dashboard.summary.activeBatches === 0 ? (
+              {dashboard?.activeBatches ?? 0 === 0 ? (
                 <div style={{ textAlign:'center', padding:'60px 20px', border:'0.5px dashed #e5e5e3', borderRadius:'12px' }}>
                   <div style={{ fontSize:'32px', marginBottom:'12px' }}>🐔</div>
                   <div style={{ fontSize:'15px', fontWeight:'500', color:'#1a1a18', marginBottom:'6px' }}>Sin lotes activos</div>
@@ -158,7 +151,7 @@ export default function AviculturaPage() {
                 </div>
               ) : (
                 <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'12px' }}>
-                  {dashboard.activeBatches.map((b: any) => {
+                  {(dashboard?.activeBatches ?? []).map((b: any) => {
                     const mort = b.mortalityLogs?.reduce((s: number, m: any) => s + m.quantity, 0) || 0
                     const mortRate = b.initialQuantity > 0 ? Math.round((mort / b.initialQuantity) * 100 * 10) / 10 : 0
                     const days = Math.ceil((new Date().getTime() - new Date(b.startDate).getTime()) / (1000*60*60*24))

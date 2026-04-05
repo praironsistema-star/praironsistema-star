@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 import { toastSuccess, toastError } from '@/components/ui/Toast'
 import { confirm } from '@/components/ui/Confirm'
 
@@ -41,8 +40,7 @@ export default function VentasPage() {
   async function loadAll() {
     setLoading(true)
     try {
-      const { supabase } = await import('@/lib/supabase')
-      const [s, c] = await Promise.all([supabase.from('sales').select('*').order('sold_at', {ascending:false}), supabase.from('organizations').select('id, name')])
+            const [s, c] = await Promise.all([api.get('/sales'), api.get('/organizations')])
       setSales(s.data || [])
       setClients(c.data || [])
     } finally { setLoading(false) }
@@ -53,8 +51,7 @@ export default function VentasPage() {
   async function saveSale(e: React.FormEvent) {
     e.preventDefault()
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('sales').insert({
+            await api.post('/sales', {
         product_name: saleForm.product,
         quantity: parseFloat(saleForm.quantity),
         unit: saleForm.unit,
@@ -94,8 +91,7 @@ export default function VentasPage() {
     const ok = await confirm({ title:'Eliminar venta', message:'¿Eliminar esta venta?', danger:true, confirmText:'Eliminar' })
     if (!ok) return
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('sales').delete().eq('id', id)
+            await api.delete('/sales/id')
       loadAll(); toastSuccess('Venta eliminada')
     } catch { toastError('Error al eliminar') }
   }

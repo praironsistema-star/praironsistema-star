@@ -2,7 +2,6 @@
 import { useI18n } from '@/lib/i18n'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 import { toastSuccess, toastError, toastInfo } from '@/components/ui/Toast'
 import { confirm } from '@/components/ui/Confirm'
 import AnimalsSkeleton from '@/components/ui/AnimalsSkeleton'
@@ -28,14 +27,14 @@ export default function AnimalsPage() {
   const [modal, setModal] = useState<'create'|'edit'|'vet'|null>(null)
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
-  const [form, setForm] = useState({ type:'bovino', breed:'', age:'', healthStatus:'saludable', milkProduction:'', farmId:'' })
+  const [form, setForm] = useState({ id:'', type:'bovino', breed:'', age:'', healthStatus:'saludable', milkProduction:'', farmId:'' })
   const [vetForm, setVetForm] = useState({ observations:'', treatments:'', date:'' })
   const [savingVet, setSavingVet] = useState(false)
 
   const load = async () => {
     try {
-      const { data: a } = await supabase.from('animals').select('*').is('deleted_at',null)
-      const { data: f } = await supabase.from('farms').select('id,name').is('deleted_at',null)
+      const { data: a } = await api.get('/animals')
+      const { data: f } = await api.get('/farms')
       setAnimals(a||[]); setFarms(f||[])
     } finally { setLoading(false) }
   }
@@ -46,7 +45,7 @@ export default function AnimalsPage() {
     setSelected(animal)
     setLoadingRecords(true)
     try {
-      const { data: r } = await supabase.from('animals').select('*,vet_records(*)').eq('id',animal.id).single()
+      const { data: r } = await api.get('/animals')
       setVetRecords(r?.vet_records || [])
     } catch { setVetRecords([]) }
     finally { setLoadingRecords(false) }
@@ -54,21 +53,21 @@ export default function AnimalsPage() {
   }
 
   function openCreate() {
-    setForm({ type:'bovino', breed:'', age:'', healthStatus:'saludable', milkProduction:'', farmId: farms[0]?.id||'' })
+    setForm({ id:'', type:'bovino', breed:'', age:'', healthStatus:'saludable', milkProduction:'', farmId: farms[0]?.id||'' })
     setSelected(null); setModal('create')
   }
 
   function openEdit(a: any, e: React.MouseEvent) {
     e.stopPropagation()
-    setForm({ type:a.type, breed:a.breed, age:String(a.age), healthStatus:a.healthStatus, milkProduction:String(a.milkProduction||''), farmId:a.farmId })
+    setForm({ id:a.id, type:a.type, breed:a.breed, age:String(a.age), healthStatus:a.healthStatus, milkProduction:String(a.milkProduction||''), farmId:a.farmId })
     setSelected(a); setModal('edit')
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const body = { ...form, age:parseInt(form.age), milkProduction:parseFloat(form.milkProduction)||0 }
-    if (modal === 'create') await supabase.from('animals').insert(body)
-    else await supabase.from('animals').update(body).eq('id',selected.id)
+    if (modal === 'create') await api.post('/animals', body)
+    else await api.patch(`/animals/${form.id}`, body)
     setModal(null); load(); toastSuccess('Guardado correctamente')
   }
 
@@ -76,26 +75,26 @@ export default function AnimalsPage() {
     e.stopPropagation()
     if (!await confirm({ title: 'Eliminar', message: '¿Estás seguro?', danger: true, confirmText: 'Eliminar' })){ return }
     // was: este animal?')) return
-    await supabase.from('animals').update({deleted_at:new Date().toISOString()}).eq('id',id); load(); toastSuccess('Animal eliminado')
+    await api.patch('/animals/id', {deleted_at:new Date().toISOString()}); load(); toastSuccess('Animal eliminado')
   }
 
   async function handleVetRecord(e: React.FormEvent) {
     e.preventDefault()
     setSavingVet(true)
     try {
-      await supabase.from('vet_records').insert({
+      await api.post('/vet_records', {
         animal_id: selected.id,
         ...vetForm,
         date: vetForm.date || new Date().toISOString(),
       })
-      const { data: r } = await supabase.from('animals').select('*,vet_records(*)').eq('id',selected.id).single()
+      const { data: r } = await api.get('/animals')
       setVetRecords(r?.vet_records || [])
       setVetForm({ observations:'', treatments:'', date:'' })
     } finally { setSavingVet(false) }
   }
 
   async function updateHealth(animalId: string, healthStatus: string) {
-    await supabase.from('animals').update({health_status:healthStatus}).eq('id',animalId)
+    await api.patch('/animals/animalId', {health_status:healthStatus})
     load()
     if (selected?.id === animalId) setSelected((prev: any) => ({ ...prev, healthStatus }))
   }

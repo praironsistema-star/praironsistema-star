@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 import { getUser } from '@/lib/auth'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -15,7 +14,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getUser().then(async({data:{user}})=>{ const {data:p} = await supabase.from('profiles').select('*').eq('id',user?.id||'').single(); if(p) setProfile(p); setLoading(false) })
+    api.get('/profiles').then(({data:p})=>{ if(p) setProfile(p); setLoading(false) })
   }, [])
 
   if (loading) {

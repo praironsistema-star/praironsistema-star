@@ -1,5 +1,4 @@
 'use client'
-import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 
@@ -33,9 +32,9 @@ export default function OdsPage() {
   async function load() {
     try {
       const [obj, t, dash] = await Promise.allSettled([
-        supabase.from('ods_objectives').select('*'),
-        supabase.from('tasks').select('*').eq('type','ods').is('deleted_at',null),
-        supabase.from('ods_objectives').select('count'),
+        api.get('/ods_objectives'),
+        api.get('/tasks'),
+        api.get('/ods_objectives'),
       ])
       if (obj.status === 'fulfilled') setObjectives(obj.value.data ?? [])
       if (t.status === 'fulfilled') setTasks(t.value.data ?? [])

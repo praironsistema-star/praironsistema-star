@@ -1,7 +1,6 @@
 'use client'
 import { useState } from 'react'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 
 const RENTABILIDAD_STYLES: Record<string, { bg: string; color: string }> = {
   alta:  { bg: '#e8f5ef', color: '#036446' },

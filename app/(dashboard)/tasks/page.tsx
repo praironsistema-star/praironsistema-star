@@ -1,5 +1,4 @@
 'use client'
-import { supabase } from '@/lib/supabase'
 import { useI18n } from '@/lib/i18n'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
@@ -76,10 +75,9 @@ export default function TasksPage() {
 
   const load = async () => {
     try {
-      const { supabase } = await import('@/lib/supabase')
-      const [tasksRes, farmsRes] = await Promise.all([
-        supabase.from('tasks').select('*').order('created_at', { ascending: false }),
-        supabase.from('farms').select('id, name'),
+            const [tasksRes, farmsRes] = await Promise.all([
+        api.get('/tasks'),
+        api.get('/farms'),
       ])
       setTasks(tasksRes.data || [])
       setLots((farmsRes.data || []).map((f:any) => ({ id: f.id, farmName: f.name })))
@@ -100,22 +98,19 @@ export default function TasksPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const { supabase } = await import('@/lib/supabase')
-    if (modal === 'create') await supabase.from('tasks').insert({ title: form.taskType, category: 'laboral', status: 'pendiente', due_date: form.date, farm_id: form.lotId })
-    else await supabase.from('tasks').update({ title: form.taskType, status: form.status, due_date: form.date }).eq('id', selected.id)
+        if (modal === 'create') await api.post('/tasks', { title: form.taskType, category: 'laboral', status: 'pendiente', due_date: form.date, farm_id: form.lotId })
+    else await api.patch('/tasks/selected.id', { title: form.taskType, status: form.status, due_date: form.date })
     setModal(null); load(); toastSuccess('Guardado correctamente')
   }
 
   async function handleDelete(id: string) {
     if (!await confirm({ title: 'Eliminar', message: '¿Estás seguro?', danger: true, confirmText: 'Eliminar' })){ return }
     // was: esta tarea?')) return
-    const { supabase } = await import('@/lib/supabase')
-    await supabase.from('tasks').update({ deleted_at: new Date().toISOString() }).eq('id', id); load(); toastSuccess('Tarea eliminada')
+        await api.patch('/tasks/id', { deleted_at: new Date().toISOString() }); load(); toastSuccess('Tarea eliminada')
   }
 
   async function handleStatusChange(id: string, status: string) {
-    const { supabase } = await import('@/lib/supabase')
-    await supabase.from('tasks').update({ status }).eq('id', id); load()
+        await api.patch('/tasks/id', { status }); load()
   }
 
   async function handleDrop(e: React.DragEvent, newStatus: string) {

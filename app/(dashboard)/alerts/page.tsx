@@ -1,7 +1,7 @@
 'use client'
+import api from '@/lib/api'
 import { useI18n } from '@/lib/i18n'
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
 import { toastInfo } from '@/components/ui/Toast'
 
 const ALERT_STYLES: Record<string,{bg:string,color:string,border:string,dot:string}> = {
@@ -25,16 +25,16 @@ export default function AlertsPage() {
   const [filter, setFilter] = useState('all')
 
   useEffect(() => {
-    supabase.from('alerts').select('*').order('created_at', { ascending: false })
+    api.get('/alerts')
   }, [])
 
   async function markRead(id: string) {
-    await supabase.from('alerts').update({ read_at: new Date().toISOString() }).eq('id', id)
+    await api.patch('/alerts/id', { read_at: new Date().toISOString() })
     setAlerts(prev => prev.map(a => a.id === id ? { ...a, readStatus: true } : a))
   }
 
   async function deleteAlert(id: string) {
-    await supabase.from('alerts').delete().eq('id', id)
+    await api.delete('/alerts/id')
     setAlerts(prev => prev.filter(a => a.id !== id))
   }
 

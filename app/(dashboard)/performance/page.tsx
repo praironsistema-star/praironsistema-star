@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 import { Bar, Doughnut, Line } from 'react-chartjs-2'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, PointElement, LineElement, Tooltip, Legend, Filler } from 'chart.js'
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, PointElement, LineElement, Tooltip, Legend, Filler)
@@ -16,8 +15,8 @@ export default function PerformancePage() {
     async function load() {
       try {
         const [farms, animals, tasks, inventory, ai] = await Promise.allSettled([
-          supabase.from('farms').select('*').is('deleted_at',null), supabase.from('animals').select('*').is('deleted_at',null), supabase.from('tasks').select('*').is('deleted_at',null),
-          supabase.from('inventory_items').select('*').is('deleted_at',null), supabase.from('inventory_items').select('count').is('deleted_at',null),
+          api.get('/farms'), api.get('/animals'), api.get('/tasks'),
+          api.get('/inventory_items'), api.get('/inventory_items'),
         ])
         setData({
           farms:     farms.status === 'fulfilled' ? farms.value.data : [],

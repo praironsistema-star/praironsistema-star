@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 import { toastSuccess, toastError } from '@/components/ui/Toast'
 import { confirm } from '@/components/ui/Confirm'
 
@@ -42,8 +41,7 @@ export default function ComprasPage() {
   async function loadAll() {
     setLoading(true)
     try {
-      const { supabase } = await import('@/lib/supabase')
-      const [p, s] = await Promise.all([supabase.from('purchases').select('*').order('purchased_at', {ascending:false}), supabase.from('organizations').select('id, name')])
+            const [p, s] = await Promise.all([api.get('/purchases'), api.get('/organizations')])
       setPurchases(p.data || [])
       setSuppliers(s.data || [])
     } finally { setLoading(false) }
@@ -54,8 +52,7 @@ export default function ComprasPage() {
   async function savePurchase(e: React.FormEvent) {
     e.preventDefault()
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('purchases').insert({
+            await api.post('/purchases', {
         supplier_name: purchaseForm.supplierId,
         total_amount: parseFloat(purchaseForm.pricePerUnit) * parseFloat(purchaseForm.quantity),
         currency: 'COP',

@@ -1,5 +1,4 @@
 'use client'
-import { supabase } from '@/lib/supabase'
 import { useI18n } from '@/lib/i18n'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
@@ -22,8 +21,7 @@ export default function InventoryPage() {
 
   const load = async () => {
     try {
-      const { supabase } = await import('@/lib/supabase')
-      const [inv, f] = await Promise.all([supabase.from('inventory_items').select('*'), supabase.from('farms').select('id, name')])
+            const [inv, f] = await Promise.all([api.get('/inventory_items'), api.get('/farms')])
       setItems(inv.data || []); setFarms(f.data || [])
     } finally { setLoading(false) }
   }
@@ -43,17 +41,15 @@ export default function InventoryPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const body = { ...form, quantity:parseFloat(form.quantity), minStock:parseFloat(form.minStock)||0 }
-    const { supabase } = await import('@/lib/supabase')
-    if (modal === 'create') await supabase.from('inventory_items').insert({ name:form.name, category:form.type, stock_current:parseFloat(form.quantity), unit:form.unit, stock_min:parseFloat(form.minStock)||0, farm_id:form.farmId })
-    else await supabase.from('inventory_items').update({ name:form.name, category:form.type, stock_current:parseFloat(form.quantity), unit:form.unit, stock_min:parseFloat(form.minStock)||0 }).eq('id', selected.id)
+        if (modal === 'create') await api.post('/inventory_items', { name:form.name, category:form.type, stock_current:parseFloat(form.quantity), unit:form.unit, stock_min:parseFloat(form.minStock)||0, farm_id:form.farmId })
+    else await api.patch('/inventory_items/selected.id', { name:form.name, category:form.type, stock_current:parseFloat(form.quantity), unit:form.unit, stock_min:parseFloat(form.minStock)||0 })
     setModal(null); load(); toastSuccess('Guardado correctamente')
   }
 
   async function handleDelete(id: string) {
     if (!await confirm({ title: 'Eliminar', message: '¿Estás seguro?', danger: true, confirmText: 'Eliminar' })){ return }
     // was: este ítem?')) return
-    const { supabase } = await import('@/lib/supabase')
-    await supabase.from('inventory_items').update({ deleted_at: new Date().toISOString() }).eq('id', id); load(); toastSuccess('Ítem eliminado')
+        await api.patch('/inventory_items/id', { deleted_at: new Date().toISOString() }); load(); toastSuccess('Ítem eliminado')
   }
 
   const lowStock = items.filter(i => i.minStock > 0 && i.quantity <= i.minStock)

@@ -1,5 +1,4 @@
 'use client'
-import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 import { toastSuccess, toastError, toastInfo } from '@/components/ui/Toast'
@@ -35,11 +34,11 @@ export default function PalmaPage() {
     setLoading(true)
     try {
       const [d, p, h, e, l] = await Promise.all([
-        supabase.from('palm_plots').select('*').is('deleted_at',null),
-        supabase.from('palm_plots').select('*').is('deleted_at',null),
-        supabase.from('palm_harvests').select('*').is('deleted_at',null),
-        supabase.from('palm_extractions').select('*').is('deleted_at',null),
-        supabase.from('palm_lab').select('*').is('deleted_at',null),
+        api.get('/palm_plots'),
+        api.get('/palm_plots'),
+        api.get('/palm_harvests'),
+        api.get('/palm_extractions'),
+        api.get('/palm_lab'),
       ])
       setDashboard(d.data ?? []); setPlots(p.data ?? []); setHarvests(h.data ?? [])
       setExtr(e.data ?? []); setLab(l.data ?? [])
@@ -50,29 +49,25 @@ export default function PalmaPage() {
 
   async function savePlot(e: React.FormEvent) {
     e.preventDefault()
-    const { supabase } = await import('@/lib/supabase')
-      await supabase.from('palm_plots').insert({...plotForm,hectares:parseFloat(plotForm.hectares),planting_year:plotForm.plantingYear?parseInt(plotForm.plantingYear):null})
+          await api.post('/palm_plots', {...plotForm,hectares:parseFloat(plotForm.hectares),planting_year:plotForm.plantingYear?parseInt(plotForm.plantingYear):null})
     setPlotModal(false); loadAll(); toastSuccess('Lote de palma creado')
   }
 
   async function saveHarvest(e: React.FormEvent) {
     e.preventDefault()
-    const { supabase } = await import('@/lib/supabase')
-      await supabase.from('palm_harvests').insert({...harvestForm,weight_tons:parseFloat(harvestForm.weightTons),bunches:harvestForm.bunches?parseInt(harvestForm.bunches):null})
+          await api.post('/palm_harvests', {...harvestForm,weight_tons:parseFloat(harvestForm.weightTons),bunches:harvestForm.bunches?parseInt(harvestForm.bunches):null})
     setHarvestModal(false); loadAll(); toastSuccess('Cosecha FFB registrada')
   }
 
   async function saveExtraction(e: React.FormEvent) {
     e.preventDefault()
-    const { supabase } = await import('@/lib/supabase')
-      await supabase.from('palm_extractions').insert({...extrForm,input_weight:parseFloat(extrForm.inputWeight),oil_output:extrForm.oilOutput?parseFloat(extrForm.oilOutput):null,kernel_output:extrForm.kernelOutput?parseFloat(extrForm.kernelOutput):null})
+          await api.post('/palm_extractions', {...extrForm,input_weight:parseFloat(extrForm.inputWeight),oil_output:extrForm.oilOutput?parseFloat(extrForm.oilOutput):null,kernel_output:extrForm.kernelOutput?parseFloat(extrForm.kernelOutput):null})
     setExtrModal(false); loadAll(); toastSuccess('Lote de extracción registrado')
   }
 
   async function saveLab(e: React.FormEvent) {
     e.preventDefault()
-    const { supabase } = await import('@/lib/supabase')
-      await supabase.from('palm_lab').insert(labForm)
+          await api.post('/palm_lab', labForm)
     setLabModal(false); loadAll(); toastSuccess('Análisis de laboratorio guardado')
   }
 

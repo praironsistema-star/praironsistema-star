@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 
 function toCSV(headers: string[], rows: any[][]) {
   const q = (v: any) => '"' + String(v ?? '').replace(/"/g, '""') + '"'
@@ -28,9 +27,9 @@ export default function ContadorPage() {
     async function load() {
       try {
         const [s, c, n] = await Promise.allSettled([
-          supabase.from('finance_transactions').select('*').order('date',{ascending:false}),
-          supabase.from('finance_costs').select('*').order('date',{ascending:false}),
-          supabase.from('labor_records').select('*').order('date',{ascending:false}),
+          api.get('/finance_transactions'),
+          api.get('/finance_costs'),
+          api.get('/labor_records'),
         ])
         if (s.status === 'fulfilled') setSummary(s.value.data ?? [])
         if (c.status === 'fulfilled') setCostReport(c.value.data ?? [])

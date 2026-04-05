@@ -1,5 +1,4 @@
 'use client'
-import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 import { toastSuccess, toastError } from '@/components/ui/Toast'
@@ -36,8 +35,8 @@ export default function AcuiculturaPage() {
     setLoading(true)
     try {
       const [p, b] = await Promise.allSettled([
-        supabase.from('aqua_ponds').select('*').is('deleted_at',null),
-        supabase.from('aqua_batches').select('*').is('deleted_at',null),
+        api.get('/aqua_ponds'),
+        api.get('/aqua_batches'),
       ])
       if (p.status === 'fulfilled') setPonds(p.value.data ?? [])
       if (b.status === 'fulfilled') setBatches(b.value.data ?? [])
@@ -49,8 +48,7 @@ export default function AcuiculturaPage() {
   async function savePond(e: React.FormEvent) {
     e.preventDefault()
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('aqua_ponds').insert({...pondForm,volume:parseFloat(pondForm.volume),area:parseFloat(pondForm.area)})
+            await api.post('/aqua_ponds', {...pondForm,volume:parseFloat(pondForm.volume),area:parseFloat(pondForm.area)})
       setPondModal(false); loadAll(); toastSuccess('Estanque creado')
     } catch { toastError('Error al crear estanque') }
   }
@@ -58,8 +56,7 @@ export default function AcuiculturaPage() {
   async function saveBatch(e: React.FormEvent) {
     e.preventDefault()
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('aqua_batches').insert({...batchForm,initial_quantity:parseInt(batchForm.initialQuantity),weight_grams:parseFloat(batchForm.weightGrams)})
+            await api.post('/aqua_batches', {...batchForm,initial_quantity:parseInt(batchForm.initialQuantity),weight_grams:parseFloat(batchForm.weightGrams)})
       setBatchModal(false); loadAll(); toastSuccess('Lote creado')
     } catch { toastError('Error al crear lote') }
   }
@@ -69,16 +66,13 @@ export default function AcuiculturaPage() {
     if (!selBatch) return
     try {
       if (recModal === 'water') {
-        const { supabase } = await import('@/lib/supabase')
-      await supabase.from('aqua_records').insert({...recForm,batch_id:selBatch.id,record_type:'water'})
+              await api.post('/aqua_records', {...recForm,batch_id:selBatch.id,record_type:'water'})
         toastSuccess('Calidad de agua registrada')
       } else if (recModal === 'feed') {
-        const { supabase } = await import('@/lib/supabase')
-      await supabase.from('aqua_records').insert({...recForm,batch_id:selBatch.id,record_type:'feed',feed_kg:parseFloat(recForm.feedKg),cost:recForm.cost?parseFloat(recForm.cost):null})
+              await api.post('/aqua_records', {...recForm,batch_id:selBatch.id,record_type:'feed',feed_kg:parseFloat(recForm.feedKg),cost:recForm.cost?parseFloat(recForm.cost):null})
         toastSuccess('Alimentación registrada')
       } else if (recModal === 'harvest') {
-        const { supabase } = await import('@/lib/supabase')
-      await supabase.from('aqua_records').insert({...recForm,batch_id:selBatch.id,record_type:'harvest',quantity:parseInt(recForm.quantity),weight_kg:parseFloat(recForm.weightKg)})
+              await api.post('/aqua_records', {...recForm,batch_id:selBatch.id,record_type:'harvest',quantity:parseInt(recForm.quantity),weight_kg:parseFloat(recForm.weightKg)})
         toastSuccess('Cosecha registrada')
       }
       setRecModal(null); loadAll()
@@ -89,8 +83,7 @@ export default function AcuiculturaPage() {
     const ok = await confirm({ title:'Eliminar estanque', message:`¿Eliminar "${name}"?`, danger:true, confirmText:'Eliminar' })
     if (!ok) return
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('aqua_ponds').update({deleted_at:new Date().toISOString()}).eq('id',id)
+            await api.patch('/aqua_ponds/id', {deleted_at:new Date().toISOString()})
       loadAll(); toastSuccess('Estanque eliminado')
     } catch { toastError('Error al eliminar') }
   }

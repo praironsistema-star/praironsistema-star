@@ -3,7 +3,6 @@ import { useI18n } from '@/lib/i18n'
 import { useEffect, useState } from 'react'
 import { getRole } from '@/lib/auth'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 
 const TEMPLATES: Record<string, any[]> = {
   'dueño': [
@@ -67,7 +66,7 @@ export default function ReportsPage() {
     async function load() {
       try {
         const [farms, animals, tasks, inventory] = await Promise.allSettled([
-          supabase.from('farms').select('*').is('deleted_at',null), supabase.from('animals').select('*').is('deleted_at',null), supabase.from('tasks').select('*').is('deleted_at',null), supabase.from('inventory_items').select('*').is('deleted_at',null),
+          api.get('/farms'), api.get('/animals'), api.get('/tasks'), api.get('/inventory_items'),
         ])
         setData({
           farms:     farms.status === 'fulfilled' ? farms.value.data : [],

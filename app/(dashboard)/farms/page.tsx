@@ -2,7 +2,6 @@
 import { useI18n } from '@/lib/i18n'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 import { toastSuccess, toastError, toastInfo } from '@/components/ui/Toast'
 import { confirm } from '@/components/ui/Confirm'
 import FarmsSkeleton from '@/components/ui/FarmsSkeleton'
@@ -234,7 +233,7 @@ export default function FarmsPage() {
   const [form, setForm] = useState({ name:'', type:'mixta', totalArea:'', location:'' })
 
   const load = async () => {
-    try { const { supabase } = await import('@/lib/supabase'); const r = await supabase.from('farms').select('*').order('name'); setFarms(r.data || []) }
+    try { ; const r = await api.get('/farms'); setFarms(r.data || []) }
     finally { setLoading(false) }
   }
 
@@ -253,16 +252,14 @@ export default function FarmsPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const body = { ...form, totalArea: parseFloat(form.totalArea) } as any
-    const { supabase } = await import('@/lib/supabase')
-    if (modal === 'create') await supabase.from('farms').insert({ name:body.name, sector:body.sector?.toLowerCase()||'ganaderia', hectares:body.hectares, country_code:'CO' })
-    else await supabase.from('farms').update({ name:body.name, sector:body.sector?.toLowerCase()||'ganaderia', hectares:body.hectares }).eq('id', selected.id)
+        if (modal === 'create') await api.post('/farms', { name:body.name, sector:body.sector?.toLowerCase()||'ganaderia', hectares:body.hectares, country_code:'CO' })
+    else await api.patch('/farms/selected.id', { name:body.name, sector:body.sector?.toLowerCase()||'ganaderia', hectares:body.hectares })
     setModal(null); load(); toastSuccess('Guardado correctamente')
   }
 
   async function handleDelete(id: string) {
     setDeleting(id)
-    const { supabase } = await import('@/lib/supabase')
-    await supabase.from('farms').update({ deleted_at: new Date().toISOString() }).eq('id', id)
+        await api.patch('/farms/id', { deleted_at: new Date().toISOString() })
     setDeleting(null); load(); toastSuccess('Granja eliminada')
   }
 

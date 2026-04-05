@@ -3,7 +3,6 @@ import { useI18n } from '@/lib/i18n'
 import { useEffect, useState } from 'react'
 import { getRole } from '@/lib/auth'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 import { toastSuccess, toastError, toastInfo } from '@/components/ui/Toast'
 import { confirm } from '@/components/ui/Confirm'
 
@@ -31,7 +30,7 @@ export default function RolesPage() {
   const canManage = role === 'dueño' || role === 'gerente'
 
   useEffect(() => {
-    supabase.from('roles').select('*').then(r => setRoles(r.data||[]))
+    api.get('/roles').then(r => setRoles(r.data||[]))
   }, [])
 
   function togglePerm(mod: string, action: string) {
@@ -77,13 +76,11 @@ export default function RolesPage() {
     setError(''); setSaving(true)
     try {
       if (editing) {
-        const { supabase } = await import('@/lib/supabase')
-      const r = await supabase.from('roles').update({name,permissions}).eq('id',editing.id)
+              const r = await api.patch('/roles/editing.id', {name,permissions})
         setRoles(roles.map(x => x.id === editing.id ? { ...x, ...(r.data ?? {}) } : x))
         toastSuccess('Rol actualizado correctamente')
       } else {
-        const { supabase } = await import('@/lib/supabase')
-      const r = await supabase.from('roles').insert({name,permissions})
+              const r = await api.post('/roles', {name,permissions})
         setRoles([...roles, r.data])
         toastSuccess('Rol creado correctamente')
       }
@@ -102,8 +99,7 @@ export default function RolesPage() {
     })
     if (!ok) return
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('roles').update({deleted_at:new Date().toISOString()}).eq('id',id)
+            await api.patch('/roles/id', {deleted_at:new Date().toISOString()})
       setRoles(roles.filter(r => r.id !== id))
       toastSuccess('Rol eliminado')
     } catch (err: any) {

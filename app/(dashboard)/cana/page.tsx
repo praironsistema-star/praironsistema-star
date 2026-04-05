@@ -1,5 +1,4 @@
 'use client'
-import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 import { toastSuccess, toastError } from '@/components/ui/Toast'
@@ -36,8 +35,8 @@ export default function CanaPage() {
     setLoading(true)
     try {
       const [s, c] = await Promise.allSettled([
-        supabase.from('plots').select('*,cuts(*)').eq('crop_type','cana').is('deleted_at',null),
-        supabase.from('cuts').select('*').is('deleted_at',null),
+        api.get('/plots'),
+        api.get('/cuts'),
       ])
       if (s.status === 'fulfilled') setSuertes(s.value.data ?? [])
       if (c.status === 'fulfilled') setCuts(c.value.data ?? [])
@@ -49,8 +48,7 @@ export default function CanaPage() {
   async function saveSuerte(e: React.FormEvent) {
     e.preventDefault()
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('plots').insert({...suerteForm,crop_type:'cana',area:parseFloat(suerteForm.area)})
+            await api.post('/plots', {...suerteForm,crop_type:'cana',area:parseFloat(suerteForm.area)})
       setSuerteModal(false); loadAll(); toastSuccess('Suerte registrada')
     } catch { toastError('Error al registrar suerte') }
   }
@@ -59,8 +57,7 @@ export default function CanaPage() {
     e.preventDefault()
     if (!selSuerte) return
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('cuts').insert({plot_id:selSuerte.id,
+            await api.post('/cuts', {plot_id:selSuerte.id,
         ...cutForm,
         toneladas: parseFloat(cutForm.toneladas),
         pol: cutForm.pol ? parseFloat(cutForm.pol) : null,
@@ -75,8 +72,7 @@ export default function CanaPage() {
     const ok = await confirm({ title:'Eliminar suerte', message:`¿Eliminar "${name}"?`, danger:true, confirmText:'Eliminar' })
     if (!ok) return
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('plots').update({deleted_at:new Date().toISOString()}).eq('id',id)
+            await api.patch('/plots/id', {deleted_at:new Date().toISOString()})
       loadAll(); toastSuccess('Suerte eliminada')
     } catch { toastError('Error al eliminar') }
   }

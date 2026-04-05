@@ -1,5 +1,4 @@
 'use client'
-import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 import { toastSuccess, toastError } from '@/components/ui/Toast'
@@ -29,8 +28,7 @@ export default function MaquinariaPage() {
   })
 
   const load = async () => {
-    try { const { supabase } = await import('@/lib/supabase')
-      const { data } = await supabase.from('machinery').select('*').is('deleted_at',null); setItems(data||[]) }
+    try {       const { data } = await api.get('/machinery'); setItems(data||[]) }
     finally { setLoading(false) }
   }
 
@@ -63,17 +61,15 @@ export default function MaquinariaPage() {
       lastMaintenance: form.lastMaintenance || null,
       nextMaintenance: form.nextMaintenance || null,
     }
-    const { supabase } = await import('@/lib/supabase')
-      if (modal === 'create') await supabase.from('machinery').insert(body)
-    else await supabase.from('machinery').update(body).eq('id',selected.id)
+          if (modal === 'create') await api.post('/machinery', body)
+    else await api.patch(`/machinery/${selected?.id}`, body)
     setModal(null); load(); toastSuccess('Guardado correctamente')
   }
 
   async function handleDelete(id: string, name: string) {
     const ok = await confirm({ title: 'Eliminar equipo', message: `¿Eliminar "${name}"?`, danger: true, confirmText: 'Eliminar' })
     if (!ok) return
-    const { supabase } = await import('@/lib/supabase')
-      await supabase.from('machinery').update({deleted_at:new Date().toISOString()}).eq('id',id); load(); toastSuccess('Equipo eliminado')
+          await api.patch('/machinery/id', {deleted_at:new Date().toISOString()}); load(); toastSuccess('Equipo eliminado')
   }
 
   const filtered = filter === 'all' ? items : items.filter(i => i.status === filter)

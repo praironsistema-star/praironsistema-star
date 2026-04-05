@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // /clima — Módulo de clima agrícola

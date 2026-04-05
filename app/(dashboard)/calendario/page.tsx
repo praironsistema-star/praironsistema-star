@@ -1,5 +1,4 @@
 'use client'
-import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 
@@ -36,7 +35,7 @@ export default function CalendarioPage() {
   const [selected, setSelected] = useState<Date | null>(null)
 
   useEffect(() => {
-    supabase.from('tasks').select('*').is('deleted_at',null)
+    api.get('/tasks')
   }, [])
 
   // Navega al mes anterior

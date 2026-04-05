@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 import { toastSuccess, toastError } from '@/components/ui/Toast'
 import { confirm } from '@/components/ui/Confirm'
 
@@ -44,8 +43,8 @@ export default function TareoPage() {
     setLoading(true)
     try {
       const [w, r] = await Promise.allSettled([
-        supabase.from('workers').select('*').is('deleted_at',null),
-        supabase.from('labor_records').select('*').is('deleted_at',null),
+        api.get('/workers'),
+        api.get('/labor_records'),
       ])
       if (w.status === 'fulfilled') setWorkers(w.value.data ?? [])
       if (r.status === 'fulfilled') setRecords(r.value.data ?? [])
@@ -57,8 +56,7 @@ export default function TareoPage() {
   async function saveWorker(e: React.FormEvent) {
     e.preventDefault()
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('workers').insert({
+            await api.post('/workers', {
         ...workerForm,
         payRate: parseFloat(workerForm.payRate),
       })
@@ -71,8 +69,7 @@ export default function TareoPage() {
   async function saveRecord(e: React.FormEvent) {
     e.preventDefault()
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('labor_records').insert({
+            await api.post('/labor_records', {
         ...recordForm,
         quantity: parseFloat(recordForm.quantity),
       })
@@ -86,8 +83,7 @@ export default function TareoPage() {
     e.preventDefault()
     if (!selWorker) return
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('payments').insert({worker_id:selWorker.id,
+            await api.post('/payments', {worker_id:selWorker.id,
         amount: parseFloat(payForm.amount),
         date: payForm.date,
         periodStart: payForm.periodStart,
@@ -104,8 +100,7 @@ export default function TareoPage() {
     const ok = await confirm({ title:'Eliminar trabajador', message:`¿Eliminar a "${name}"?`, danger:true, confirmText:'Eliminar' })
     if (!ok) return
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('workers').update({deleted_at:new Date().toISOString()}).eq('id',id)
+            await api.patch('/workers/id', {deleted_at:new Date().toISOString()})
       loadAll(); toastSuccess('Trabajador eliminado')
     } catch { toastError('Error al eliminar') }
   }
@@ -114,8 +109,7 @@ export default function TareoPage() {
     const ok = await confirm({ title:'Eliminar registro', message:'¿Eliminar este registro de labor?', danger:true, confirmText:'Eliminar' })
     if (!ok) return
     try {
-      const { supabase } = await import('@/lib/supabase')
-      await supabase.from('labor_records').update({deleted_at:new Date().toISOString()}).eq('id',id)
+            await api.patch('/labor_records/id', {deleted_at:new Date().toISOString()})
       loadAll(); toastSuccess('Registro eliminado')
     } catch { toastError('Error al eliminar') }
   }

@@ -1,5 +1,4 @@
 'use client'
-import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 import { toastSuccess, toastError } from '@/components/ui/Toast'
@@ -23,32 +22,28 @@ export default function ApiculturaPage() {
 
   async function loadAll() {
     setLoading(true)
-    try { const { supabase } = await import('@/lib/supabase')
-      const { data } = await supabase.from('hives').select('*,inspections(*)').is('deleted_at',null); setColmenas(data||[]) }
+    try {       const { data } = await api.get('/hives'); setColmenas(data||[]) }
     finally { setLoading(false) }
   }
   useEffect(() => { loadAll() }, [])
 
   async function saveColmena(e: React.FormEvent) {
     e.preventDefault()
-    try { const { supabase } = await import('@/lib/supabase')
-      await supabase.from('hives').insert(form); setModal(false); loadAll(); toastSuccess('Colmena registrada') }
+    try {       await api.post('/hives', form); setModal(false); loadAll(); toastSuccess('Colmena registrada') }
     catch { toastError('Error al registrar colmena') }
   }
 
   async function saveRevision(e: React.FormEvent) {
     e.preventDefault()
     if (!selCol) return
-    try { const { supabase } = await import('@/lib/supabase')
-      await supabase.from('inspections').insert({...revForm,hive_id:selCol.id}); setRevModal(false); loadAll(); toastSuccess('Revisión registrada') }
+    try {       await api.post('/inspections', {...revForm,hive_id:selCol.id}); setRevModal(false); loadAll(); toastSuccess('Revisión registrada') }
     catch { toastError('Error al registrar revisión') }
   }
 
   async function deleteColmena(id: string, codigo: string) {
     const ok = await confirm({ title:'Eliminar colmena', message:`¿Eliminar colmena "${codigo}"?`, danger:true, confirmText:'Eliminar' })
     if (!ok) return
-    try { const { supabase } = await import('@/lib/supabase')
-      await supabase.from('hives').update({deleted_at:new Date().toISOString()}).eq('id',id); loadAll(); toastSuccess('Colmena eliminada') }
+    try {       await api.patch('/hives/id', {deleted_at:new Date().toISOString()}); loadAll(); toastSuccess('Colmena eliminada') }
     catch { toastError('Error al eliminar') }
   }
 

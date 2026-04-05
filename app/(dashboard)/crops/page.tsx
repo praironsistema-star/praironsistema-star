@@ -2,7 +2,6 @@
 import { useI18n } from '@/lib/i18n'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 import { toastSuccess, toastError, toastInfo } from '@/components/ui/Toast'
 import { confirm } from '@/components/ui/Confirm'
 
@@ -19,13 +18,12 @@ export default function CropsPage() {
   const [predictions, setPredictions] = useState<any[]>([])
   const [loadingPred, setLoadingPred] = useState(false)
   const [showPred, setShowPred] = useState(false)
-  const [form, setForm] = useState({ name:'', type:'maiz', plantedAt:'', harvestAt:'', farmId:'' })
+  const [form, setForm] = useState({ id:'', name:'', type:'maiz', plantedAt:'', harvestAt:'', farmId:'' })
 
   const load = async () => {
     try {
-      const { supabase } = await import('@/lib/supabase')
-      const { data: c } = await supabase.from('crops').select('*').is('deleted_at',null)
-      const { data: f } = await supabase.from('farms').select('id,name').is('deleted_at',null)
+            const { data: c } = await api.get('/crops')
+      const { data: f } = await api.get('/farms')
       setCrops(c || []); setFarms(f || [])
     } finally { setLoading(false) }
   }
@@ -44,29 +42,27 @@ export default function CropsPage() {
   }
 
   function openCreate() {
-    setForm({ name:'', type:'maiz', plantedAt: new Date().toISOString().split('T')[0], harvestAt:'', farmId: farms[0]?.id||'' })
+    setForm({ id:'', name:'', type:'maiz', plantedAt: new Date().toISOString().split('T')[0], harvestAt:'', farmId: farms[0]?.id||'' })
     setSelected(null); setModal('create')
   }
 
   function openEdit(c: any) {
-    setForm({ name:c.name, type:c.type||'maiz', plantedAt: c.plantedAt?.split('T')[0]||'', harvestAt: c.harvestAt?.split('T')[0]||'', farmId:c.farmId })
+    setForm({ id:c.id, name:c.name, type:c.type||'maiz', plantedAt: c.plantedAt?.split('T')[0]||'', harvestAt: c.harvestAt?.split('T')[0]||'', farmId:c.farmId })
     setSelected(c); setModal('edit')
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const body = { ...form, harvestAt: form.harvestAt || null }
-    const { supabase } = await import('@/lib/supabase')
-      if (modal === 'create') await supabase.from('crops').insert(body)
-    else await supabase.from('crops').update(body).eq('id',selected.id)
+          if (modal === 'create') await api.post('/crops', body)
+    else await api.patch(`/crops/${form.id}`, body)
     setModal(null); load()
   }
 
   async function handleDelete(id: string) {
     const ok = await confirm({ title: 'Eliminar cultivo', message: '¿Eliminar este cultivo?', danger: true, confirmText: 'Eliminar' })
     if (!ok) return
-    const { supabase } = await import('@/lib/supabase')
-      await supabase.from('crops').update({deleted_at:new Date().toISOString()}).eq('id',id); load()
+          await api.patch('/crops/id', {deleted_at:new Date().toISOString()}); load()
   }
 
   const now = new Date()

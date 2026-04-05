@@ -1,7 +1,7 @@
 'use client'
+import api from '@/lib/api'
 import { useI18n } from '@/lib/i18n'
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
 import { toastSuccess, toastError } from '@/components/ui/Toast'
 import { getUser } from '@/lib/auth'
 
@@ -54,26 +54,25 @@ export default function SettingsPage() {
   const [loadingActivity, setLoadingActivity] = useState(false)
 
   useEffect(() => {
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
-      if (!user) return
-      const { data: p } = await supabase.from('profiles').select('*').eq('id', user.id).single()
-      if (p) {
-        setProfile({ name: p.full_name || p.name || '', email: user.email || '' })
-      }
-      const { data: org } = await supabase.from('organizations').select('*').eq('id', user.user_metadata?.org_id || '').single()
-      if (org) setCompany({ name: org.name || '', typeOfFarm: org.type_of_farm || 'mixta', location: org.location || '' })
-    })
+    async function load() {
+      try {
+        const p = (await api.get('/profiles'))?.data
+        if (p) setProfile({ name: p.full_name || p.name || '', email: p.email || '' })
+        const org = (await api.get('/organizations'))?.data
+        if (org) setCompany({ name: org.name || '', typeOfFarm: org.type_of_farm || 'mixta', location: org.location || '' })
+      } catch(e) { console.error(e) }
+    }
+    load()
   }, [])
 
   useEffect(() => {
     if (activeTab === 'actividad' && activity.length === 0) {
       setLoadingActivity(true)
-      supabase.from('audit_log').select('*').order('created_at', { ascending: false }).limit(30)
-        .then((r) => { setActivity(r.data || []); setLoadingActivity(false) })
+      api.get('/audit_log?limit=30').then((r) => { setActivity(r.data || []); setLoadingActivity(false) })
     }
     if (activeTab === 'equipo' && team.length === 0) {
       setLoadingTeam(true)
-      supabase.from('profiles').select('*')
+      api.get('/profiles')
         .then((r) => { setTeam(r.data || []); setLoadingTeam(false) })
     }
   }, [activeTab])
@@ -82,8 +81,8 @@ export default function SettingsPage() {
     e.preventDefault()
     setSaving(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      await supabase.from('profiles').update({ full_name: profile.name }).eq('id', user?.id || '')
+      const user = (await api.get('/auth/me'))?.data
+      await api.patch(`/profiles/${user?.id}`, { full_name: profile.name })
       toastSuccess('Perfil actualizado correctamente')
     } catch { toastError('Error al actualizar el perfil') }
     finally { setSaving(false) }
@@ -95,7 +94,7 @@ export default function SettingsPage() {
     if (passwords.nuevo.length < 6) { toastError('Mínimo 6 caracteres'); return }
     setSavingPass(true)
     try {
-      await supabase.auth.updateUser({ password: passwords.nuevo })
+      await api.patch('/auth/password', { password: passwords.nuevo })
       setPasswords({ current: '', nuevo: '', confirmar: '' })
       toastSuccess('Contraseña actualizada correctamente')
     } catch { toastError('Error al cambiar la contraseña') }
@@ -106,8 +105,8 @@ export default function SettingsPage() {
     e.preventDefault()
     setSavingC(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      await supabase.from('organizations').update({ name: company.name, type_of_farm: company.typeOfFarm, location: company.location }).eq('id', user?.user_metadata?.org_id || '')
+      const user = (await api.get('/auth/me'))?.data
+      await api.patch(`/organizations/${user?.user_metadata?.org_id}`, { name: company.name, type_of_farm: company.typeOfFarm, location: company.location })
       toastSuccess('Empresa actualizada correctamente')
     } catch { toastError('Error al actualizar la empresa') }
     finally { setSavingC(false) }

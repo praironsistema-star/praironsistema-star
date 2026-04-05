@@ -1,7 +1,6 @@
 'use client'
 import { useState, useRef } from 'react'
 import api from '@/lib/api'
-import { supabase } from '@/lib/supabase'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // /vision — Análisis de imágenes de cultivos con Claude Vision

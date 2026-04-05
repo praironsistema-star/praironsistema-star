@@ -197,15 +197,16 @@ export default function DashboardPage() {
   async function loadDashboard() {
     setLoading(true)
     try {
-      const { supabase: sb } = await import('@/lib/supabase')
-      const { data: alertsData } = await sb.from('alerts').select('*').limit(5)
-      const { data: tasksData } = await sb.from('tasks').select('*').eq('status', 'pendiente').limit(5)
-      const { data: prodsData } = await sb.from('production_records').select('*').order('record_date', { ascending: false }).limit(10)
+      const [alertsRes, tasksRes, prodsRes] = await Promise.all([
+        api.get('/alerts?limit=5').catch(() => ({ data: [] })),
+        api.get('/tasks?limit=5').catch(() => ({ data: [] })),
+        api.get('/production_records?limit=10').catch(() => ({ data: [] })),
+      ])
       setData({
         type: industry.toLowerCase(),
-        alerts: alertsData || [],
-        tasks: tasksData || [],
-        productions: prodsData || [],
+        alerts: alertsRes.data || [],
+        tasks: tasksRes.data || [],
+        productions: prodsRes.data || [],
         summary: {}
       })
     } catch { setData({ type: industry.toLowerCase() }) }
