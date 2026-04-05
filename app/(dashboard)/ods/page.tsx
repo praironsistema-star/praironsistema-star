@@ -1,3 +1,4 @@
+import { supabase } from '@/lib/supabase'
 'use client'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
