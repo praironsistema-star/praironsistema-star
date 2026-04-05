@@ -1,4 +1,5 @@
 'use client'
+import { IndustryGuard } from '@/components/IndustryGuard'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 import { toastSuccess, toastError } from '@/components/ui/Toast'
@@ -17,7 +18,7 @@ const card: React.CSSProperties = {
   background:'#fff', border:'0.5px solid #e5e5e3', borderRadius:'10px', padding:'16px',
 }
 
-export default function AcuiculturaPage() {
+function AcuiculturaPage() {
   const [tab, setTab] = useState('dashboard')
   const [ponds, setPonds] = useState<any[]>([])
   const [batches, setBatches] = useState<any[]>([])
@@ -389,5 +390,13 @@ export default function AcuiculturaPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function Page() {
+  return (
+    <IndustryGuard module='ACUICULTURA'>
+      <AcuiculturaPage />
+    </IndustryGuard>
   )
 }

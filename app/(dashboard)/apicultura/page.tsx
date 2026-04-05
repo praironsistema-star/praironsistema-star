@@ -1,4 +1,5 @@
 'use client'
+import { IndustryGuard } from '@/components/IndustryGuard'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 import { toastSuccess, toastError } from '@/components/ui/Toast'
@@ -10,7 +11,7 @@ const inp: React.CSSProperties = { width:'100%', border:'0.5px solid #e5e5e3', b
 const ESTADO_REINA = ['Presente activa','Presente inactiva','Huérfana','No verificada']
 const ESTADO_COLMENA = ['Fuerte','Media','Débil','Enjambre','Cuarentena']
 
-export default function ApiculturaPage() {
+function ApiculturaPage() {
   const [tab, setTab] = useState('dashboard')
   const [colmenas, setColmenas] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -231,5 +232,13 @@ export default function ApiculturaPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function Page() {
+  return (
+    <IndustryGuard module='APICULTURA'>
+      <ApiculturaPage />
+    </IndustryGuard>
   )
 }

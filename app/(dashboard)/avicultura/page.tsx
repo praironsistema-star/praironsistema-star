@@ -1,4 +1,5 @@
 'use client'
+import { IndustryGuard } from '@/components/IndustryGuard'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 import { toastSuccess, toastError, toastInfo } from '@/components/ui/Toast'
@@ -20,7 +21,7 @@ const inputStyle: React.CSSProperties = {
   boxSizing:'border-box', fontFamily:'inherit', background:'#f9f9f7',
 }
 
-export default function AviculturaPage() {
+function AviculturaPage() {
   const [tab, setTab]             = useState('dashboard')
   const [dashboard, setDashboard] = useState<any>(null)
   const [houses, setHouses]       = useState<any[]>([])
@@ -394,5 +395,13 @@ export default function AviculturaPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function Page() {
+  return (
+    <IndustryGuard module='AVICULTURA'>
+      <AviculturaPage />
+    </IndustryGuard>
   )
 }

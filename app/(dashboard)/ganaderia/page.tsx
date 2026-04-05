@@ -1,4 +1,5 @@
 'use client'
+import { IndustryGuard } from '@/components/IndustryGuard'
 
 import { useState } from 'react'
 
@@ -142,7 +143,7 @@ type Tab = 'inventario' | 'pesajes' | 'sanidad' | 'reproduccion' | 'pasturas'
 
 // ─── Componente principal ─────────────────────────────────────────────────────
 
-export default function GanaderiaPage() {
+function GanaderiaPage() {
   const [tab, setTab] = useState<Tab>('inventario')
   const [animales, setAnimales] = useState<Animal[]>(ANIMALES_DEMO)
   const [lotes] = useState<Lote[]>(LOTES_DEMO)
@@ -532,4 +533,10 @@ export default function GanaderiaPage() {
   )
 }
 
-
+export default function Page() {
+  return (
+    <IndustryGuard module='GANADERIA'>
+      <GanaderiaPage />
+    </IndustryGuard>
+  )
+}

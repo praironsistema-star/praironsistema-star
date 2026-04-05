@@ -1,4 +1,5 @@
 'use client'
+import { IndustryGuard } from '@/components/IndustryGuard'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 import { toastSuccess, toastError } from '@/components/ui/Toast'
@@ -17,7 +18,7 @@ const card: React.CSSProperties = {
   background:'#fff', border:'0.5px solid #e5e5e3', borderRadius:'10px', padding:'16px',
 }
 
-export default function CaficulturaPage() {
+function CaficulturaPage() {
   const [tab, setTab] = useState('dashboard')
   const [plots, setPlots] = useState<any[]>([])
   const [harvests, setHarvests] = useState<any[]>([])
@@ -330,5 +331,13 @@ export default function CaficulturaPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function Page() {
+  return (
+    <IndustryGuard module='CAFE'>
+      <CaficulturaPage />
+    </IndustryGuard>
   )
 }

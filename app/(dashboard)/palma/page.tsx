@@ -1,4 +1,5 @@
 'use client'
+import { IndustryGuard } from '@/components/IndustryGuard'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 import { toastSuccess, toastError, toastInfo } from '@/components/ui/Toast'
@@ -11,7 +12,7 @@ const inputStyle: React.CSSProperties = {
 
 const LAB_TYPES = ['suelo','aceite','agua','foliar','genetico']
 
-export default function PalmaPage() {
+function PalmaPage() {
   const [tab, setTab]             = useState('dashboard')
   const [dashboard, setDashboard] = useState<any>(null)
   const [plots, setPlots]         = useState<any[]>([])
@@ -391,5 +392,13 @@ export default function PalmaPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function Page() {
+  return (
+    <IndustryGuard module='PALMA'>
+      <PalmaPage />
+    </IndustryGuard>
   )
 }
