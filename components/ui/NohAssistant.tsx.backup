@@ -1,0 +1,399 @@
+'use client'
+import { useState, useEffect, useRef } from 'react'
+import { usePathname } from 'next/navigation'
+import posthog from 'posthog-js'
+import api from '@/lib/api'
+
+interface Message {
+  id: string
+  text: string
+  isUser: boolean
+  time: string
+}
+
+const QUICK_QUESTIONS = [
+  { label: 'Estado de mi finca', q: 'Dame un resumen del estado actual de mi operación' },
+  { label: 'Animales enfermos', q: '¿Hay animales que requieran atención veterinaria?' },
+  { label: 'Stock crítico', q: '¿Qué ítems del inventario están por debajo del mínimo?' },
+  { label: 'Tareas pendientes', q: '¿Cuáles son las tareas más urgentes de hoy?' },
+  { label: 'Recomendación ODS', q: '¿Qué acciones ODS me recomiendas para esta semana?' },
+  { label: 'Consejo cultivos', q: 'Dame un consejo agronómico para mejorar mis cultivos' },
+]
+
+const FALLBACK_RESPONSES: Record<string, string> = {
+  'resumen': 'Para ver el resumen de tu operación ve al Dashboard principal. Ahí encuentras granjas, animales, tareas y alertas en tiempo real.',
+  'enferm': 'Cuando un animal enferma: 1) Aíslalo del hato, 2) Ve a Animales en PRAIRON, 3) Cambia su estado a "Enfermo", 4) Agrega un registro veterinario con los síntomas.',
+  'inventario': 'Para revisar el stock crítico ve al módulo Inventario. Los ítems en rojo están por debajo del mínimo y necesitan reposición urgente.',
+  'tarea': 'Las tareas pendientes están en el módulo Tareas. Puedes filtrar por estado y cambiar a "En progreso" o "Completada" con un solo clic.',
+  'ods': 'Los ODS más relevantes para tu operación dependen de tu cultivo. Ve al módulo ODS para ver tus indicadores activos y tareas de sostenibilidad.',
+  'cultivo': 'Para consejos agrícolas revisa el módulo Cultivos. Ahí puedes ver el progreso de cada ciclo y las fechas estimadas de cosecha.',
+  'maíz': 'El maíz tecnificado tiene ciclo de 120 días. Asegúrate de aplicar fertilización en la etapa V6 y controlar plagas en la etapa VT.',
+  'café': 'Para café: mantén la densidad de siembra a 2500 plantas/ha, podas cada 2 años y aplica abono en época de lluvia.',
+  'palma': 'La palma requiere control de efluentes y área de conservación. Registra estos datos en ODS para cumplimiento de sostenibilidad.',
+  'vacun': 'Plan básico bovino Colombia: Aftosa cada 6 meses (obligatorio), Brucela en hembras jóvenes, Carbón sintomático anual.',
+  'leche': 'Para aumentar producción láctea: mejora la nutrición con concentrado de alta energía, asegura agua fresca disponible y reduce el estrés del animal.',
+  'default': 'Soy el Ingeniero NOH y estoy aquí para ayudarte. Puedo orientarte sobre cultivos, animales, inventario y sostenibilidad. ¿Puedes darme más detalles?',
+}
+
+function getFallback(text: string): string {
+  const lower = text.toLowerCase()
+  for (const [key, resp] of Object.entries(FALLBACK_RESPONSES)) {
+    if (key !== 'default' && lower.includes(key)) return resp
+  }
+  return FALLBACK_RESPONSES.default
+}
+
+function NohSVG({ size = 56 }: { size?: number }) {
+  return (
+    <svg width={size} height={size * 1.22} viewBox="0 0 72 88" style={{ display: 'block' }}>
+      <ellipse cx="36" cy="20" rx="20" ry="20" fill="#f5c896"/>
+      <rect x="14" y="4" width="44" height="18" rx="9" fill="#5a3e1b"/>
+      <rect x="10" y="3" width="52" height="10" rx="5" fill="#7a5230"/>
+      <rect x="6" y="8" width="12" height="6" rx="3" fill="#7a5230"/>
+      <rect x="54" y="8" width="12" height="6" rx="3" fill="#7a5230"/>
+      <ellipse cx="27" cy="20" rx="3" ry="3.5" fill="white"/>
+      <ellipse cx="45" cy="20" rx="3" ry="3.5" fill="white"/>
+      <ellipse cx="27" cy="20.5" rx="1.8" ry="2" fill="#2d1a06"/>
+      <ellipse cx="45" cy="20.5" rx="1.8" ry="2" fill="#2d1a06"/>
+      <path d="M30 28 Q36 32 42 28" stroke="#c0775a" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+      <rect x="22" y="38" width="28" height="32" rx="6" fill="#2d6a2d"/>
+      <rect x="26" y="42" width="20" height="14" rx="3" fill="#3a8a3a"/>
+      <rect x="20" y="36" width="8" height="4" rx="2" fill="#f5c896"/>
+      <rect x="44" y="36" width="8" height="4" rx="2" fill="#f5c896"/>
+      <rect x="8" y="38" width="18" height="8" rx="4" fill="#f5c896"/>
+      <circle cx="8" cy="42" r="5" fill="#f5c896"/>
+      <rect x="50" y="38" width="18" height="8" rx="4" fill="#f5c896"/>
+      <circle cx="68" cy="42" r="5" fill="#f5c896"/>
+      <rect x="24" y="69" width="10" height="18" rx="4" fill="#5a3e1b"/>
+      <rect x="38" y="69" width="10" height="18" rx="4" fill="#5a3e1b"/>
+      <rect x="22" y="83" width="14" height="6" rx="3" fill="#3d2b0e"/>
+      <rect x="36" y="83" width="14" height="6" rx="3" fill="#3d2b0e"/>
+    </svg>
+  )
+}
+
+export default function NohAssistant() {
+  const [open, setOpen] = useState(false)
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '0',
+      text: '¡Hola! Soy el Ingeniero NOH. Estoy aquí para ayudarte con tu operación. Puedo responder sobre cultivos, animales, inventario, ODS y más. ¿En qué te ayudo?',
+      isUser: false,
+      time: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+    }
+  ])
+  const [input, setInput] = useState('')
+  const [typing, setTyping] = useState(false)
+  const [floatY, setFloatY] = useState(0)
+  const [blink, setBlink] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const pathname = usePathname()
+  const [speaking, setSpeaking] = useState(false)
+  const [voiceEnabled, setVoiceEnabled] = useState(false)
+
+  // Contexto del modulo actual segun la ruta
+  const MODULE_CONTEXT: Record<string, string> = {
+    '/dashboard':   'El usuario está en el Dashboard principal viendo KPIs y resumen general.',
+    '/farms':       'El usuario está en el módulo de Granjas gestionando sus fincas y parcelas.',
+    '/animals':     'El usuario está en el módulo de Animales viendo el hato y registros veterinarios.',
+    '/inventory':   'El usuario está en el módulo de Inventario controlando insumos y stock.',
+    '/tasks':       'El usuario está en el módulo de Tareas con el tablero Kanban de actividades.',
+    '/reports':     'El usuario está en el módulo de Reportes generando informes.',
+    '/alerts':      'El usuario está en el módulo de Alertas revisando notificaciones críticas.',
+    '/calendario':  'El usuario está en el Calendario agrícola viendo tareas por fecha.',
+    '/clima':       'El usuario está en el módulo de Clima viendo el pronóstico agrícola.',
+    '/maquinaria':  'El usuario está en el módulo de Maquinaria gestionando equipos.',
+    '/settings':    'El usuario está en Configuración ajustando su cuenta y empresa.',
+    '/profile':     'El usuario está viendo su perfil personal.',
+    '/roles':       'El usuario está gestionando roles y permisos del equipo.',
+    '/team':        'El usuario está viendo el equipo de trabajo.',
+    '/ods':         'El usuario está en el módulo ODS de sostenibilidad.',
+    '/crops':       'El usuario está en el módulo de Cultivos.',
+    '/performance': 'El usuario está viendo indicadores de desempeño.',
+  }
+
+  const currentModule = Object.entries(MODULE_CONTEXT).find(([path]) =>
+    pathname?.startsWith(path)
+  )?.[1] || 'El usuario está navegando por PRAIRON.'
+
+  useEffect(() => {
+    const floatInterval = setInterval(() => {
+      setFloatY(y => y === 0 ? -5 : 0)
+    }, 1500)
+    const blinkInterval = setInterval(() => {
+      setBlink(true)
+      setTimeout(() => setBlink(false), 150)
+    }, 4000)
+    return () => { clearInterval(floatInterval); clearInterval(blinkInterval) }
+  }, [])
+
+  useEffect(() => {
+    if (open) {
+      setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
+      setTimeout(() => inputRef.current?.focus(), 200)
+    }
+  }, [open, messages])
+
+
+  // Lee el texto en voz alta usando Web Speech API (nativa del browser, sin API key)
+  // Trackear apertura del chat NOH
+  function handleOpen() {
+    setOpen(true)
+    posthog.capture('noh_chat_opened', { pathname })
+  }
+
+  function speak(text: string) {
+    if (!voiceEnabled || typeof window === 'undefined' || !window.speechSynthesis) return
+    // Cancelar cualquier lectura en curso
+    window.speechSynthesis.cancel()
+    const utterance = new SpeechSynthesisUtterance(text)
+    utterance.lang    = 'es-CO'
+    utterance.rate    = 0.95
+    utterance.pitch   = 1.0
+    utterance.volume  = 0.9
+    // Buscar una voz en español si está disponible
+    const voices = window.speechSynthesis.getVoices()
+    const esVoice = voices.find(v => v.lang.startsWith('es')) || voices[0]
+    if (esVoice) utterance.voice = esVoice
+    utterance.onstart = () => setSpeaking(true)
+    utterance.onend   = () => setSpeaking(false)
+    utterance.onerror = () => setSpeaking(false)
+    window.speechSynthesis.speak(utterance)
+  }
+
+  function stopSpeaking() {
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel()
+      setSpeaking(false)
+    }
+  }
+
+  async function sendMessage(text: string) {
+    if (!text.trim() || typing) return
+    const userMsg: Message = {
+      id: Date.now().toString(),
+      text,
+      isUser: true,
+      time: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+    }
+    setMessages(prev => [...prev, userMsg])
+    setInput('')
+    setTyping(true)
+    posthog.capture('noh_message_sent', { pathname, messageLength: text.length })
+
+    try {
+      const [summary, alerts] = await Promise.allSettled([
+        api.get('/finance/summary').catch(() => ({ data: null })),
+        api.get('/alerts').catch(() => ({ data: [] })),
+      ])
+
+      const summaryData = summary.status === 'fulfilled' ? summary.value.data : null
+      const alertsData = alerts.status === 'fulfilled' ? alerts.value.data : []
+
+      const context = summaryData ? [
+        'CONTEXTO DE LA FINCA:',
+        'Granjas: ' + (summaryData.farms?.total || 0) + ' (' + (summaryData.farms?.totalHa || 0) + ' ha)',
+        'Animales: ' + (summaryData.animals?.total || 0),
+        'Producción leche: ' + (summaryData.animals?.totalMilkPerDay || 0) + ' L/día',
+        'Inventario: ' + (summaryData.inventory?.total || 0) + ' ítems, ' + (summaryData.inventory?.lowStock || 0) + ' bajo mínimo',
+        'Tareas: ' + (summaryData.tasks?.total || 0) + ' total, ' + (summaryData.tasks?.completed || 0) + ' completadas',
+        'Alertas activas: ' + alertsData.length,
+      ].join('\n') : ''
+
+      // Construimos el historial de conversacion — max 10 mensajes para no exceder tokens
+      // Excluimos el mensaje inicial de bienvenida (id='0') y el que acabamos de agregar
+      const currentMessages = [...messages, userMsg]
+      const historyMessages = currentMessages
+        .filter(m => m.id !== '0')
+        .slice(-10) // Solo los ultimos 10 mensajes
+        .map(m => ({
+          role: m.isUser ? 'user' : 'assistant',
+          content: m.text,
+        }))
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: `Eres el Ingeniero NOH, un asistente agroindustrial experto y amigable de PRAIRON. Hablas en español colombiano, de manera cálida y directa como un ingeniero agrónomo con experiencia en campo. Das consejos prácticos y concretos. Eres experto en ganadería, cultivos tropicales (maíz, café, palma, cacao, caña), ODS agrícolas, veterinaria básica e inventario de fincas. Cuando el usuario te pregunta algo del sistema, lo orientas a la sección correcta de PRAIRON. Responde en máximo 3-4 oraciones, de forma clara y útil. IMPORTANTE: Recuerdas toda la conversación anterior y mantienes coherencia entre respuestas. CONTEXTO DE PANTALLA ACTUAL: ${currentModule} Usa este contexto para dar respuestas más relevantes — si está en animales habla de animales, si está en inventario habla de stock, etc. ${context}`,
+          messages: historyMessages,
+        })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        const reply = data.content?.[0]?.text || getFallback(text)
+        const nohReply = {
+          id: Date.now().toString() + '_r',
+          text: reply,
+          isUser: false,
+          time: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+        }
+        setMessages(prev => [...prev, nohReply])
+        speak(reply)
+      } else {
+        throw new Error('API error')
+      }
+    } catch {
+      setTimeout(() => {
+        setMessages(prev => [...prev, {
+          id: Date.now().toString() + '_r',
+          text: getFallback(text),
+          isUser: false,
+          time: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+        }])
+      }, 800)
+    } finally {
+      setTyping(false)
+    }
+  }
+
+  return (
+    <>
+      <div style={{
+        position: 'fixed', bottom: '24px', right: '24px', zIndex: 1000,
+        display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '12px',
+      }}>
+        {!open && (
+          <div style={{
+            background: '#fff', border: '0.5px solid #e5e5e3', borderRadius: '12px',
+            padding: '8px 14px', fontSize: '12px', color: '#1a1a18', fontWeight: '500',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.08)', animation: 'noh-fadein 0.3s ease',
+            maxWidth: '200px', textAlign: 'right',
+          }}>
+            ¿Necesitas ayuda con tu finca? 👨‍🌾
+          </div>
+        )}
+
+        <button
+          onClick={() => open ? setOpen(false) : handleOpen()}
+          style={{
+            width: '64px', height: '64px', borderRadius: '50%',
+            background: open ? '#036446' : '#fff',
+            border: '2px solid #036446',
+            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 4px 20px rgba(3,100,70,0.25)',
+            transform: `translateY(${floatY}px)`,
+            transition: 'transform 1.5s ease-in-out, background 0.2s',
+            overflow: 'hidden', padding: 0,
+          }}>
+          {open ? (
+            <span style={{ fontSize: '20px', color: 'white', fontWeight: '300' }}>×</span>
+          ) : (
+            <div style={{ transform: 'scale(0.85)', marginTop: '4px' }}>
+              <NohSVG size={52} />
+            </div>
+          )}
+        </button>
+
+        {!open && (
+          <div style={{
+            position: 'absolute', bottom: '4px', right: '4px',
+            width: '14px', height: '14px', borderRadius: '50%',
+            background: '#0dac5e', border: '2px solid #fff',
+          }} />
+        )}
+      </div>
+
+      {open && (
+        <div style={{
+          position: 'fixed', bottom: '100px', right: '24px', zIndex: 999,
+          width: '380px', height: '540px',
+          background: '#fff', border: '0.5px solid #e5e5e3', borderRadius: '16px',
+          boxShadow: '0 8px 40px rgba(0,0,0,0.12)',
+          display: 'flex', flexDirection: 'column', overflow: 'hidden',
+          animation: 'noh-slidein 0.25s ease',
+        }}>
+          <style>{`
+            @keyframes noh-fadein { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+            @keyframes noh-slidein { from{opacity:0;transform:translateY(16px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+            @keyframes noh-dot { 0%,60%,100%{opacity:0.2} 30%{opacity:1} }
+            @keyframes noh-msg { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+            .noh-typing-dot { width:6px;height:6px;border-radius:50%;background:#9b9b97;display:inline-block; }
+            .noh-typing-dot:nth-child(1){animation:noh-dot 1.2s ease infinite 0s}
+            .noh-typing-dot:nth-child(2){animation:noh-dot 1.2s ease infinite 0.2s}
+            .noh-typing-dot:nth-child(3){animation:noh-dot 1.2s ease infinite 0.4s}
+            .noh-message{animation:noh-msg 0.25s ease}
+          `}</style>
+
+          <div style={{ padding: '14px 16px', borderBottom: '0.5px solid #e5e5e3', display: 'flex', alignItems: 'center', gap: '10px', background: '#f9f9f7' }}>
+            <div style={{ flexShrink: 0, transform: `translateY(${floatY * 0.5}px)`, transition: 'transform 1.5s ease-in-out' }}>
+              <NohSVG size={36} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '13px', fontWeight: '500', color: '#1a1a18' }}>Ingeniero NOH</div>
+              <div style={{ fontSize: '11px', color: '#0dac5e', fontWeight: '500' }}>
+                {typing ? 'Escribiendo...' : 'En línea — PRAIRON IA Agrícola'}
+              </div>
+            </div>
+            <button onClick={() => setMessages([messages[0]])} style={{ fontSize: '11px', color: '#9b9b97', background: 'none', border: 'none', cursor: 'pointer', padding: '2px 6px' }}>
+              Limpiar
+            </button>
+          </div>
+
+          <div style={{ flex: 1, overflowY: 'auto', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {messages.map(msg => (
+              <div key={msg.id} className="noh-message" style={{ display: 'flex', gap: '8px', flexDirection: msg.isUser ? 'row-reverse' : 'row', alignItems: 'flex-end' }}>
+                {!msg.isUser && (
+                  <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: '#e8f5ef', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '13px', fontWeight: '600', color: '#036446' }}>N</div>
+                )}
+                <div style={{
+                  maxWidth: '260px', padding: '9px 12px', borderRadius: msg.isUser ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
+                  background: msg.isUser ? '#036446' : '#f9f9f7',
+                  color: msg.isUser ? 'white' : '#1a1a18',
+                  fontSize: '13px', lineHeight: '1.5',
+                  border: msg.isUser ? 'none' : '0.5px solid #e5e5e3',
+                }}>
+                  {msg.text}
+                  <div style={{ fontSize: '10px', color: msg.isUser ? 'rgba(255,255,255,0.6)' : '#9b9b97', marginTop: '4px', textAlign: msg.isUser ? 'right' : 'left' }}>{msg.time}</div>
+                </div>
+              </div>
+            ))}
+            {typing && (
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
+                <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: '#e8f5ef', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '600', color: '#036446' }}>N</div>
+                <div style={{ padding: '10px 14px', background: '#f9f9f7', border: '0.5px solid #e5e5e3', borderRadius: '14px 14px 14px 4px', display: 'flex', gap: '4px', alignItems: 'center' }}>
+                  <span className="noh-typing-dot"></span>
+                  <span className="noh-typing-dot"></span>
+                  <span className="noh-typing-dot"></span>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          <div style={{ padding: '8px 10px', borderTop: '0.5px solid #f0f0ee', display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '6px' }}>
+            {QUICK_QUESTIONS.map(q => (
+              <button key={q.label} onClick={() => sendMessage(q.q)}
+                style={{ fontSize: '11px', padding: '5px 10px', borderRadius: '20px', border: '0.5px solid #e5e5e3', background: '#fff', cursor: 'pointer', color: '#6b6b67', whiteSpace: 'nowrap', flexShrink: 0, transition: 'all 0.15s' }}
+                onMouseEnter={e => { (e.target as HTMLElement).style.borderColor = '#036446'; (e.target as HTMLElement).style.color = '#036446' }}
+                onMouseLeave={e => { (e.target as HTMLElement).style.borderColor = '#e5e5e3'; (e.target as HTMLElement).style.color = '#6b6b67' }}>
+                {q.label}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ padding: '10px 12px', borderTop: '0.5px solid #e5e5e3', display: 'flex', gap: '8px' }}>
+            <input
+              ref={inputRef}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') sendMessage(input) }}
+              placeholder="Pregúntale al Ingeniero NOH..."
+              style={{ flex: 1, border: '0.5px solid #e5e5e3', borderRadius: '8px', padding: '8px 12px', fontSize: '13px', outline: 'none', background: '#f9f9f7' }}
+            />
+            <button
+              onClick={() => sendMessage(input)}
+              disabled={!input.trim() || typing}
+              style={{ padding: '8px 14px', background: input.trim() && !typing ? '#036446' : '#e5e5e3', color: input.trim() && !typing ? 'white' : '#9b9b97', border: 'none', borderRadius: '8px', fontSize: '12px', fontWeight: '500', cursor: input.trim() && !typing ? 'pointer' : 'not-allowed' }}>
+              Enviar
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}

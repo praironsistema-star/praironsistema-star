@@ -1,0 +1,112 @@
+/* ─── PRAIRON — Responsive global ─── */
+
+/* Sidebar colapsable en móvil */
+@media (max-width: 768px) {
+  /* Layout principal */
+  [data-layout="dashboard"] {
+    flex-direction: column !important;
+  }
+
+  /* Sidebar → barra inferior en móvil */
+  aside[data-sidebar] {
+    width: 100% !important;
+    min-height: unset !important;
+    height: 60px !important;
+    flex-direction: row !important;
+    border-right: none !important;
+    border-top: 0.5px solid #e5e5e3 !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 100 !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 0 8px !important;
+    align-items: center !important;
+    background: #fff !important;
+  }
+
+  /* Contenido principal */
+  main, [data-main] {
+    padding: 16px !important;
+    padding-bottom: 72px !important; /* espacio para barra inferior */
+    max-width: 100% !important;
+  }
+
+  /* Grids → columna única */
+  [style*="grid-template-columns: repeat(4"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  [style*="grid-template-columns: repeat(3"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  [style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  [style*="grid-template-columns: 2fr 1fr"],
+  [style*="grid-template-columns: 1fr 2fr"],
+  [style*="grid-template-columns: 1fr 1.6fr"],
+  [style*="grid-template-columns: 2.5fr 1fr 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Tablas → scroll horizontal */
+  table {
+    display: block !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Botones full width en móvil */
+  .btn-primary, .btn-secondary {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Hero del landing */
+  section[style*="minHeight: '100vh'"] > div {
+    grid-template-columns: 1fr !important;
+    padding: 0 20px !important;
+  }
+
+  /* Nav landing en móvil */
+  nav[style*="position: 'fixed'"] {
+    padding: 0 16px !important;
+  }
+  nav[style*="position: 'fixed'"] > div:nth-child(2) {
+    display: none !important; /* Ocultar links nav en móvil */
+  }
+
+  /* Modales full screen en móvil */
+  [style*="position:'fixed'"][style*="inset:0"] > div,
+  [style*='position:"fixed"'][style*='inset:0'] > div {
+    width: 95vw !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
+
+  /* Padding reducido en páginas internas */
+  [style*="padding: '28px 32px'"],
+  [style*='padding: "28px 32px"'] {
+    padding: 16px !important;
+  }
+
+  /* Precios — cards apiladas */
+  [style*="transform: 'scale(1.04)'"],
+  [style*='transform: "scale(1.04)"'] {
+    transform: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  [style*="grid-template-columns: repeat(2"] {
+    grid-template-columns: 1fr !important;
+  }
+  h1[style*="fontSize: '58px'"] {
+    font-size: 36px !important;
+  }
+  h2[style*="fontSize: '44px'"] {
+    font-size: 28px !important;
+  }
+}

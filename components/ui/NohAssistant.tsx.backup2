@@ -1,0 +1,350 @@
+'use client'
+import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
+import api from '@/lib/api'
+
+// =============================================================================
+// NohAssistant.tsx — PRAIRON
+// Ruta: ~/prairon/frontend/components/ui/NohAssistant.tsx
+//
+// QUÉ HACE:
+//   Panel lateral derecho fijo, siempre visible, estilo Airtable.
+//   Contiene el chat con NOH (IA agroindustrial) y el personaje 3D.
+//
+// ESTRUCTURA DEL PANEL (320px ancho):
+//   ┌─────────────────────────┐
+//   │  Header: NOH + avatar   │  ← personaje 3D + nombre + status
+//   ├─────────────────────────┤
+//   │  Preguntas rápidas      │  ← chips clickeables
+//   ├─────────────────────────┤
+//   │  Mensajes (scroll)      │  ← historial del chat
+//   ├─────────────────────────┤
+//   │  Input + botón enviar   │  ← escribir pregunta
+//   └─────────────────────────┘
+// =============================================================================
+
+interface Message {
+  id: string
+  text: string
+  isUser: boolean
+  time: string
+}
+
+// Preguntas rápidas que aparecen como chips arriba del chat
+const QUICK_QUESTIONS = [
+  { label: '🌾 Mi operación',   q: 'Dame un resumen del estado actual de mi operación' },
+  { label: '🐄 Animales',       q: '¿Hay animales que requieran atención veterinaria?' },
+  { label: '📦 Stock crítico',  q: '¿Qué ítems del inventario están por debajo del mínimo?' },
+  { label: '✅ Tareas hoy',     q: '¿Cuáles son las tareas más urgentes de hoy?' },
+  { label: '🌿 ODS',           q: '¿Qué acciones ODS me recomiendas para esta semana?' },
+  { label: '💡 Cultivos',      q: 'Dame un consejo agronómico para mejorar mis cultivos' },
+]
+
+// Respuestas de fallback cuando la API no responde
+const FALLBACK: Record<string, string> = {
+  'resumen':    'Para ver el resumen de tu operación ve al Dashboard principal. Ahí encuentras granjas, animales, tareas y alertas en tiempo real.',
+  'enferm':     'Cuando un animal enferma: 1) Aíslalo del hato, 2) Ve a Animales en PRAIRON, 3) Cambia su estado a "Enfermo", 4) Agrega un registro veterinario.',
+  'inventario': 'Para revisar el stock crítico ve al módulo Inventario. Los ítems en rojo están por debajo del mínimo y necesitan reposición urgente.',
+  'tarea':      'Las tareas pendientes están en el módulo Tareas. Puedes filtrar por estado y completarlas con un clic.',
+  'ods':        'Ve al módulo ODS para ver tus indicadores activos y tareas de sostenibilidad.',
+  'cultivo':    'Para consejos agrícolas revisa el módulo Cultivos. Ahí puedes ver el progreso de cada ciclo.',
+  'maíz':       'El maíz tecnificado tiene ciclo de 120 días. Fertilización en etapa V6 y control de plagas en VT.',
+  'café':       'Para café: 2500 plantas/ha, podas cada 2 años, abono en época de lluvia.',
+  'palma':      'La palma requiere control de efluentes. Registra estos datos en ODS para cumplimiento de sostenibilidad.',
+  'vacun':      'Plan bovino Colombia: Aftosa cada 6 meses, Brucela en hembras jóvenes, Carbón sintomático anual.',
+  'leche':      'Para aumentar producción láctea: concentrado de alta energía, agua fresca disponible, reducir estrés.',
+  'default':    'Soy el Ingeniero NOH y estoy aquí para ayudarte. Puedo orientarte sobre cultivos, animales, inventario y sostenibilidad. ¿En qué te ayudo?',
+}
+
+function getFallback(text: string): string {
+  const lower = text.toLowerCase()
+  for (const [key, resp] of Object.entries(FALLBACK)) {
+    if (key !== 'default' && lower.includes(key)) return resp
+  }
+  return FALLBACK.default
+}
+
+export default function NohAssistant() {
+  const [messages, setMessages] = useState<Message[]>([{
+    id: '0',
+    text: '¡Hola! Soy el Ingeniero NOH 👨‍🌾 Estoy aquí para ayudarte con tu operación agroindustrial. ¿En qué te ayudo hoy?',
+    isUser: false,
+    time: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+  }])
+  const [input, setInput]   = useState('')
+  const [typing, setTyping] = useState(false)
+  const [floatY, setFloatY] = useState(0)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const inputRef       = useRef<HTMLInputElement>(null)
+
+  // Animación de flotación del personaje
+  useEffect(() => {
+    let frame: number
+    let start: number
+    const animate = (ts: number) => {
+      if (!start) start = ts
+      setFloatY(Math.sin((ts - start) / 1800) * 5)
+      frame = requestAnimationFrame(animate)
+    }
+    frame = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(frame)
+  }, [])
+
+  // Auto-scroll al último mensaje
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, typing])
+
+  const sendMessage = async (text: string) => {
+    const trimmed = text.trim()
+    if (!trimmed || typing) return
+    setInput('')
+
+    const userMsg: Message = {
+      id:     Date.now().toString(),
+      text:   trimmed,
+      isUser: true,
+      time:   new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+    }
+    setMessages(prev => [...prev, userMsg])
+    setTyping(true)
+
+    try {
+      const res = await api.post('/noh/chat', { message: trimmed })
+      const reply = res.data?.response || res.data?.message || getFallback(trimmed)
+      setMessages(prev => [...prev, {
+        id:     Date.now().toString() + 'r',
+        text:   reply,
+        isUser: false,
+        time:   new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+      }])
+    } catch {
+      setMessages(prev => [...prev, {
+        id:     Date.now().toString() + 'f',
+        text:   getFallback(trimmed),
+        isUser: false,
+        time:   new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+      }])
+    } finally {
+      setTyping(false)
+      inputRef.current?.focus()
+    }
+  }
+
+  return (
+    <>
+      <style>{`
+        @keyframes noh-msg  { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes noh-dot  { 0%,60%,100%{opacity:0.2} 30%{opacity:1} }
+        @keyframes noh-glow { 0%,100%{box-shadow:0 0 0 0 rgba(3,100,70,0.15)} 50%{box-shadow:0 0 0 6px rgba(3,100,70,0)} }
+        .noh-msg  { animation: noh-msg 0.25s ease }
+        .noh-dot  { width:6px;height:6px;border-radius:50%;background:#9b9b97;display:inline-block }
+        .noh-dot:nth-child(1){animation:noh-dot 1.2s ease infinite 0s}
+        .noh-dot:nth-child(2){animation:noh-dot 1.2s ease infinite 0.2s}
+        .noh-dot:nth-child(3){animation:noh-dot 1.2s ease infinite 0.4s}
+        .noh-quick:hover { border-color:#036446 !important; color:#036446 !important; background:#e8f5ef !important }
+        .noh-input:focus { border-color:#036446 !important; outline:none }
+        .noh-send:hover  { background:#024d36 !important }
+        .noh-scroll::-webkit-scrollbar { width:4px }
+        .noh-scroll::-webkit-scrollbar-track { background:transparent }
+        .noh-scroll::-webkit-scrollbar-thumb { background:#e5e5e3;border-radius:4px }
+      `}</style>
+
+      {/* ── Panel lateral derecho fijo — 320px, altura completa ── */}
+      <div style={{
+        width: '320px',
+        minWidth: '320px',
+        height: '100vh',
+        position: 'sticky',
+        top: 0,
+        borderLeft: '0.5px solid var(--border-color, #e5e5e3)',
+        background: 'var(--bg-primary, #ffffff)',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        flexShrink: 0,
+      }}>
+
+        {/* ── Header NOH con personaje 3D ── */}
+        <div style={{
+          padding: '16px 16px 0',
+          background: 'linear-gradient(180deg, #e8f5ef 0%, #ffffff 100%)',
+          borderBottom: '0.5px solid #e5e5e3',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '0',
+        }}>
+          {/* Personaje 3D flotante */}
+          <div style={{
+            transform: `translateY(${floatY}px)`,
+            transition: 'transform 0.1s ease-out',
+            width: '110px',
+            height: '110px',
+            position: 'relative',
+            filter: 'drop-shadow(0 8px 16px rgba(3,100,70,0.2))',
+          }}>
+            <Image
+              src="/images/noh-character.png"
+              alt="Ingeniero NOH"
+              width={110}
+              height={110}
+              style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+              priority
+            />
+          </div>
+
+          {/* Nombre y status */}
+          <div style={{ textAlign: 'center', paddingBottom: '12px' }}>
+            <div style={{ fontSize: '14px', fontWeight: '700', color: '#1a1a18', letterSpacing: '-.2px' }}>
+              Ingeniero NOH
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', marginTop: '3px' }}>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#0dac5e', animation: 'noh-glow 2s ease infinite' }} />
+              <span style={{ fontSize: '11px', color: '#0dac5e', fontWeight: '600' }}>
+                {typing ? 'Escribiendo...' : 'En línea · IA Agroindustrial'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Preguntas rápidas ── */}
+        <div style={{
+          padding: '10px 12px',
+          borderBottom: '0.5px solid #f0f0ee',
+          display: 'flex', flexWrap: 'wrap', gap: '6px',
+        }}>
+          {QUICK_QUESTIONS.map(q => (
+            <button
+              key={q.label}
+              className="noh-quick"
+              onClick={() => sendMessage(q.q)}
+              style={{
+                fontSize: '11px', padding: '4px 10px', borderRadius: '20px',
+                border: '0.5px solid #e5e5e3', background: '#f9f9f7',
+                cursor: 'pointer', color: '#6b6b67', transition: 'all 0.15s',
+                fontFamily: 'inherit',
+              }}>
+              {q.label}
+            </button>
+          ))}
+        </div>
+
+        {/* ── Mensajes (área con scroll) ── */}
+        <div
+          className="noh-scroll"
+          style={{ flex: 1, overflowY: 'auto', padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {messages.map(msg => (
+            <div key={msg.id} className="noh-msg" style={{
+              display: 'flex', gap: '8px',
+              flexDirection: msg.isUser ? 'row-reverse' : 'row',
+              alignItems: 'flex-end',
+            }}>
+              {/* Avatar NOH en mensajes recibidos */}
+              {!msg.isUser && (
+                <div style={{
+                  width: '24px', height: '24px', borderRadius: '50%',
+                  background: '#036446', display: 'flex', alignItems: 'center',
+                  justifyContent: 'center', flexShrink: 0,
+                  fontSize: '10px', fontWeight: '700', color: 'white',
+                }}>N</div>
+              )}
+              {/* Burbuja del mensaje */}
+              <div style={{
+                maxWidth: '220px', padding: '8px 11px',
+                borderRadius: msg.isUser ? '12px 12px 3px 12px' : '12px 12px 12px 3px',
+                background: msg.isUser ? '#036446' : '#f9f9f7',
+                color: msg.isUser ? 'white' : '#1a1a18',
+                fontSize: '12.5px', lineHeight: '1.55',
+                border: msg.isUser ? 'none' : '0.5px solid #e5e5e3',
+              }}>
+                {msg.text}
+                <div style={{
+                  fontSize: '9px', marginTop: '4px',
+                  color: msg.isUser ? 'rgba(255,255,255,0.55)' : '#9b9b97',
+                  textAlign: msg.isUser ? 'right' : 'left',
+                }}>{msg.time}</div>
+              </div>
+            </div>
+          ))}
+
+          {/* Indicador de escritura */}
+          {typing && (
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
+              <div style={{
+                width: '24px', height: '24px', borderRadius: '50%',
+                background: '#036446', display: 'flex', alignItems: 'center',
+                justifyContent: 'center', fontSize: '10px', fontWeight: '700', color: 'white',
+              }}>N</div>
+              <div style={{
+                padding: '10px 14px', background: '#f9f9f7',
+                border: '0.5px solid #e5e5e3', borderRadius: '12px 12px 12px 3px',
+                display: 'flex', gap: '4px', alignItems: 'center',
+              }}>
+                <span className="noh-dot" />
+                <span className="noh-dot" />
+                <span className="noh-dot" />
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* ── Input para escribir ── */}
+        <div style={{
+          padding: '10px 12px',
+          borderTop: '0.5px solid #e5e5e3',
+          background: '#fafafa',
+          display: 'flex', gap: '8px', alignItems: 'center',
+        }}>
+          <input
+            ref={inputRef}
+            className="noh-input"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) sendMessage(input) }}
+            placeholder="Pregúntale a NOH..."
+            style={{
+              flex: 1, border: '0.5px solid #e5e5e3', borderRadius: '8px',
+              padding: '8px 11px', fontSize: '12.5px',
+              background: '#fff', color: '#1a1a18',
+              fontFamily: 'inherit', transition: 'border-color 0.15s',
+            }}
+          />
+          <button
+            className="noh-send"
+            onClick={() => sendMessage(input)}
+            disabled={!input.trim() || typing}
+            style={{
+              width: '34px', height: '34px', borderRadius: '8px', border: 'none',
+              background: input.trim() && !typing ? '#036446' : '#e5e5e3',
+              color: input.trim() && !typing ? 'white' : '#9b9b97',
+              cursor: input.trim() && !typing ? 'pointer' : 'not-allowed',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0, transition: 'background 0.15s', fontSize: '14px',
+            }}>
+            ↑
+          </button>
+        </div>
+
+        {/* ── Footer: botón limpiar chat ── */}
+        <div style={{
+          padding: '6px 12px 8px',
+          background: '#fafafa',
+          borderTop: '0.5px solid #f0f0ee',
+          textAlign: 'center',
+        }}>
+          <button
+            onClick={() => setMessages([messages[0]])}
+            style={{
+              fontSize: '11px', color: '#9b9b97', background: 'none',
+              border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+            }}>
+            Limpiar conversación
+          </button>
+        </div>
+
+      </div>
+    </>
+  )
+}
