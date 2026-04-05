@@ -77,7 +77,22 @@ function EmptyMini({ icon, text }: { icon: string; text: string }) {
 // ─── Vista Dueño/Gerente ──────────────────────────────────────────────────────
 function OwnerView({ data, industry, t }: { data: any; industry: string; t: any }) {
   const s = data?.summary || {}
-  const kpis: { label: string; value: string|number; icon: string; color: string; trend: 'up'|'down'|'neutral' }[] = industry === 'AVICOLA' ? [
+  const kpis: { label: string; value: string|number; icon: string; color: string; trend: 'up'|'down'|'neutral' }[] = industry === 'CAFE' ? [
+    { label: 'Lotes cafeteros', value: s.totalPlots||0, icon: '☕', color: '#036446', trend: 'neutral' as const },
+    { label: 'Área total (ha)', value: `${s.totalArea||0} ha`, icon: '📐', color: '#036446', trend: 'neutral' as const },
+    { label: 'Kg cereza cosechados', value: fmt(s.totalKg||0), icon: '⚖️', color: '#b45309', trend: 'up' as const },
+    { label: 'Plantas totales', value: fmt(s.totalPlants||0), icon: '🌱', color: '#185fa5', trend: 'neutral' as const },
+  ] : industry === 'GANADERIA' || industry === 'GANADERO' ? [
+    { label: 'Animales en hato', value: fmt(s.totalAnimals||0), icon: '🐄', color: '#b45309', trend: 'neutral' as const },
+    { label: 'Nacimientos mes', value: s.births||0, icon: '🐣', color: '#036446', trend: 'up' as const },
+    { label: 'Producción leche (L)', value: fmt(s.milkProduction||0), icon: '🥛', color: '#185fa5', trend: 'neutral' as const },
+    { label: 'Alertas sanitarias', value: s.healthAlerts||0, icon: '🏥', color: '#ef4444', trend: s.healthAlerts>0?'down':'up' as 'up'|'down' },
+  ] : industry === 'CANA' ? [
+    { label: 'Lotes de caña', value: s.totalPlots||0, icon: '🎋', color: '#036446', trend: 'neutral' as const },
+    { label: 'Hectáreas totales', value: `${s.totalArea||0} ha`, icon: '📐', color: '#036446', trend: 'neutral' as const },
+    { label: 'Ton cosechadas', value: fmt(s.totalTons||0), icon: '⚖️', color: '#b45309', trend: 'up' as const },
+    { label: 'Rendimiento (ton/ha)', value: s.yield||0, icon: '📊', color: '#185fa5', trend: 'neutral' as const },
+  ] : industry === 'AVICULTURA' || industry === 'AVICOLA' ? [
     { label: 'Galpones activos', value: s.totalHouses||0, icon: '🏠', color: '#dc2626', trend: 'neutral' as const },
     { label: 'Aves en producción', value: fmt(s.totalAnimals||0), icon: '🐔', color: '#dc2626', trend: 'up' as const },
     { label: 'Mortalidad promedio', value: `${s.avgMortalityRate||0}%`, icon: '📉', color: (s.avgMortalityRate||0)>5?'#ef4444':'#036446', trend: ((s.avgMortalityRate||0)>5?'down':'up') as 'up'|'down'|'neutral' },
@@ -185,7 +200,8 @@ function WorkerView({ data, t }: { data: any; t: any }) {
 export default function DashboardPage() {
   const { t } = useI18n()
   const user = getUser()
-  const industry = ((user as any)?.industryType || 'MIXTO').toUpperCase()
+  const modules: string[] = (user as any)?.industryModules || ['MIXTO']
+  const industry = modules.includes('MIXTO') ? 'MIXTO' : modules[0] || 'MIXTO'
   const roleName = (user as any)?.roleName || 'Dueño'
   const roleGroup = getRoleGroup(roleName)
   const nombre = user?.name?.split(' ')[0] || 'productor'
@@ -217,7 +233,7 @@ export default function DashboardPage() {
   const greeting = hour < 12 ? t('dashboard_page.greeting_morning') : hour < 19 ? t('dashboard_page.greeting_afternoon') : t('dashboard_page.greeting_evening')
 
   const roleLabel: Record<string, string> = { owner: '👑 Dueño / Gerente', field: '🌿 Campo', finance: '💼 Contador', worker: '👷 Trabajador' }
-  const industryColor: Record<string, string> = { AVICOLA: '#dc2626', PALMA: '#036446', GANADERO: '#b45309', AGRICOLA: '#185fa5', MIXTO: '#6d28d9' }
+  const industryColor: Record<string, string> = { AVICOLA: '#dc2626', AVICULTURA: '#dc2626', PALMA: '#036446', GANADERO: '#b45309', GANADERIA: '#b45309', AGRICOLA: '#185fa5', CAFE: '#036446', CANA: '#4d7c0f', ACUICULTURA: '#0369a1', APICULTURA: '#b45309', CACAO: '#7c3aed', ARROZ: '#b45309', MIXTO: '#6d28d9' }
   const ic = industryColor[industry] || '#036446'
 
   return (
@@ -234,7 +250,12 @@ export default function DashboardPage() {
           </p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          {industry==='AVICOLA'  && <Link href="/avicultura" style={{ fontSize:12, padding:'8px 14px', background:'#fef2f2', color:'#dc2626', border:'0.5px solid #fecaca', borderRadius:8, textDecoration:'none', fontWeight:600 }}>Galpones →</Link>}
+          {(industry==='AVICOLA'||industry==='AVICULTURA')  && <Link href="/avicultura" style={{ fontSize:12, padding:'8px 14px', background:'#fef2f2', color:'#dc2626', border:'0.5px solid #fecaca', borderRadius:8, textDecoration:'none', fontWeight:600 }}>Galpones →</Link>}
+          {industry==='CAFE'      && <Link href="/caficultura" style={{ fontSize:12, padding:'8px 14px', background:'#e8f5ef', color:'#036446', border:'0.5px solid #6ee7b7', borderRadius:8, textDecoration:'none', fontWeight:600 }}>Caficultura →</Link>}
+          {industry==='CANA'      && <Link href="/cana"        style={{ fontSize:12, padding:'8px 14px', background:'#f0fdf4', color:'#4d7c0f', border:'0.5px solid #bbf7d0', borderRadius:8, textDecoration:'none', fontWeight:600 }}>Caña →</Link>}
+          {industry==='ACUICULTURA' && <Link href="/acuicultura" style={{ fontSize:12, padding:'8px 14px', background:'#e0f2fe', color:'#0369a1', border:'0.5px solid #7dd3fc', borderRadius:8, textDecoration:'none', fontWeight:600 }}>Acuicultura →</Link>}
+          {industry==='APICULTURA' && <Link href="/apicultura" style={{ fontSize:12, padding:'8px 14px', background:'#fef3e2', color:'#b45309', border:'0.5px solid #fed7aa', borderRadius:8, textDecoration:'none', fontWeight:600 }}>Apicultura →</Link>}
+          {industry==='MIXTO'     && <><Link href="/caficultura" style={{ fontSize:12, padding:'8px 14px', background:'#e8f5ef', color:'#036446', border:'0.5px solid #6ee7b7', borderRadius:8, textDecoration:'none', fontWeight:600, marginRight:6 }}>Café →</Link><Link href="/avicultura" style={{ fontSize:12, padding:'8px 14px', background:'#fef2f2', color:'#dc2626', border:'0.5px solid #fecaca', borderRadius:8, textDecoration:'none', fontWeight:600 }}>Aves →</Link></>}
           {industry==='PALMA'    && <Link href="/palma"      style={{ fontSize:12, padding:'8px 14px', background:'#e8f5ef', color:'#036446', border:'0.5px solid #6ee7b7', borderRadius:8, textDecoration:'none', fontWeight:600 }}>Palma →</Link>}
           {industry==='GANADERO' && <Link href="/animals"    style={{ fontSize:12, padding:'8px 14px', background:'#fef3e2', color:'#b45309', border:'0.5px solid #fed7aa', borderRadius:8, textDecoration:'none', fontWeight:600 }}>Hato →</Link>}
           {industry==='AGRICOLA' && <Link href="/crops"      style={{ fontSize:12, padding:'8px 14px', background:'#e8f5ef', color:'#036446', border:'0.5px solid #a7f3d0', borderRadius:8, textDecoration:'none', fontWeight:600 }}>Cultivos →</Link>}
