@@ -1,14 +1,9 @@
 'use client'
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { getUser, logout } from '@/lib/auth'
+import { useIndustry } from '@/hooks/useIndustry'
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher'
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Sidebar.tsx — PRAIRON
-// Logo real + perfil de usuario + logout + rutas corregidas
-// ─────────────────────────────────────────────────────────────────────────────
 
 const NAV = [
   {
@@ -21,15 +16,17 @@ const NAV = [
   {
     group: 'Producción',
     items: [
-      { href: '/crops',           icon: '🌿',  label: 'Cultivos' },
       { href: '/farms',           icon: '🏡',  label: 'Fincas' },
-      { href: '/ganaderia',       icon: '🐄',  label: 'Ganadería' },
-      { href: '/acuicultura',     icon: '🐟',  label: 'Acuicultura' },
-      { href: '/avicultura',      icon: '🐔',  label: 'Avicultura' },
-      { href: '/palma',           icon: '🌴',  label: 'Palma' },
-      { href: '/caficultura',     icon: '☕',  label: 'Caficultura' },
-      { href: '/cana',            icon: '🌾',  label: 'Caña de Azúcar' },
-      { href: '/apicultura',      icon: '🍯',  label: 'Apicultura' },
+      { href: '/crops',           icon: '🌿',  label: 'Cultivos' },
+      { href: '/caficultura',     icon: '☕',  label: 'Caficultura',      module: 'CAFE' },
+      { href: '/palma',           icon: '🌴',  label: 'Palma',            module: 'PALMA' },
+      { href: '/avicultura',      icon: '🐔',  label: 'Avicultura',       module: 'AVICULTURA' },
+      { href: '/ganaderia',       icon: '🐄',  label: 'Ganadería',        module: 'GANADERIA' },
+      { href: '/cana',            icon: '🌾',  label: 'Caña de Azúcar',   module: 'CANA' },
+      { href: '/acuicultura',     icon: '🐟',  label: 'Acuicultura',      module: 'ACUICULTURA' },
+      { href: '/apicultura',      icon: '🍯',  label: 'Apicultura',       module: 'APICULTURA' },
+      { href: '/cacao',           icon: '🍫',  label: 'Cacao',            module: 'CACAO' },
+      { href: '/arroz',           icon: '🌾',  label: 'Arroz',            module: 'ARROZ' },
       { href: '/trazabilidad',    icon: '🔗',  label: 'Trazabilidad QR' },
     ]
   },
@@ -86,6 +83,7 @@ export default function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const user = getUser()
+  const { hasModule, isLoaded } = useIndustry()
 
   const initials = user?.name
     ?.split(' ')
@@ -117,12 +115,8 @@ export default function Sidebar() {
         flexShrink: 0,
       }}>
         <Link href="/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {/* Logo imagen — dark/light mode */}
           <picture>
-            <source
-              srcSet="/images/logo-dark.png"
-              media="(prefers-color-scheme: dark)"
-            />
+            <source srcSet="/images/logo-dark.png" media="(prefers-color-scheme: dark)" />
             <img
               src="/images/logo-white.png"
               alt="PRAIRON"
@@ -144,55 +138,65 @@ export default function Sidebar() {
 
       {/* ── Nav grupos (scrollable) ── */}
       <nav style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
-        {NAV.map(group => (
-          <div key={group.group} style={{ marginBottom: '4px' }}>
-            <div style={{
-              fontSize: '9px',
-              fontWeight: '600',
-              color: 'var(--text-tertiary, #c4c4c0)',
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              padding: '10px 16px 4px',
-            }}>
-              {group.group}
-            </div>
+        {NAV.map(group => {
+          // Filtrar ítems según módulos del usuario
+          const visibleItems = isLoaded
+            ? group.items.filter(item => !item.module || hasModule(item.module))
+            : group.items.filter(item => !item.module)
 
-            {group.items.map(item => {
-              const active = pathname === item.href || pathname.startsWith(item.href + '/')
-              return (
-                <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '9px',
-                    padding: '7px 16px',
-                    borderRadius: '6px',
-                    margin: '0 6px',
-                    fontSize: '12.5px',
-                    fontWeight: active ? '500' : '400',
-                    color: active
-                      ? 'var(--brand-green, #036446)'
-                      : 'var(--text-secondary, #6b6b67)',
-                    background: active ? 'var(--green-bg, #f0fdf4)' : 'transparent',
-                    cursor: 'pointer',
-                    transition: 'background 0.1s, color 0.1s',
-                  }}>
-                    <span style={{ fontSize: '13px', lineHeight: 1, flexShrink: 0 }}>{item.icon}</span>
-                    <span style={{ flex: 1 }}>{item.label}</span>
-                    {active && (
-                      <span style={{
-                        width: '4px', height: '4px',
-                        borderRadius: '50%',
-                        background: 'var(--brand-green, #036446)',
-                        flexShrink: 0,
-                      }} />
-                    )}
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
-        ))}
+          // No mostrar el grupo si quedó vacío
+          if (visibleItems.length === 0) return null
+
+          return (
+            <div key={group.group} style={{ marginBottom: '4px' }}>
+              <div style={{
+                fontSize: '9px',
+                fontWeight: '600',
+                color: 'var(--text-tertiary, #c4c4c0)',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                padding: '10px 16px 4px',
+              }}>
+                {group.group}
+              </div>
+
+              {visibleItems.map(item => {
+                const active = pathname === item.href || pathname.startsWith(item.href + '/')
+                return (
+                  <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '9px',
+                      padding: '7px 16px',
+                      borderRadius: '6px',
+                      margin: '0 6px',
+                      fontSize: '12.5px',
+                      fontWeight: active ? '500' : '400',
+                      color: active
+                        ? 'var(--brand-green, #036446)'
+                        : 'var(--text-secondary, #6b6b67)',
+                      background: active ? 'var(--green-bg, #f0fdf4)' : 'transparent',
+                      cursor: 'pointer',
+                      transition: 'background 0.1s, color 0.1s',
+                    }}>
+                      <span style={{ fontSize: '13px', lineHeight: 1, flexShrink: 0 }}>{item.icon}</span>
+                      <span style={{ flex: 1 }}>{item.label}</span>
+                      {active && (
+                        <span style={{
+                          width: '4px', height: '4px',
+                          borderRadius: '50%',
+                          background: 'var(--brand-green, #036446)',
+                          flexShrink: 0,
+                        }} />
+                      )}
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          )
+        })}
       </nav>
 
       {/* ── Perfil + Logout (fijo al fondo) ── */}
@@ -201,7 +205,6 @@ export default function Sidebar() {
         padding: '10px 8px',
         flexShrink: 0,
       }}>
-        {/* Perfil */}
         <Link href="/profile" style={{ textDecoration: 'none' }}>
           <div style={{
             display: 'flex',
@@ -215,7 +218,6 @@ export default function Sidebar() {
           onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-secondary, #f5f5f3)')}
           onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
           >
-            {/* Avatar con iniciales */}
             <div style={{
               width: '28px',
               height: '28px',
@@ -255,10 +257,8 @@ export default function Sidebar() {
           </div>
         </Link>
 
-        {/* Idioma */}
         <LanguageSwitcher />
 
-        {/* Logout */}
         <button
           onClick={handleLogout}
           style={{

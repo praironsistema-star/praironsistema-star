@@ -32,7 +32,7 @@ export default function LanguageSwitcher() {
     setOpen(false)
 
     // 2. Guardar en base de datos si el usuario está logueado
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('prairon_token')
     if (token) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/locale`, {
         method: 'PATCH',
