@@ -1,5 +1,6 @@
 import OfflineIndicator from '@/components/ui/OfflineIndicator';
 import Sidebar from '@/components/layout/Sidebar';
+import { MobileNav } from '@/components/layout/MobileNav';
 import NotificationBell from '@/components/ui/NotificationBell';
 import NohAssistant from '@/components/ui/NohAssistant';
 import ThemeToggle from '@/components/ui/ThemeToggle';
@@ -15,6 +16,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <ThemeInit />
       <AuthGuard />
       <div data-sidebar><Sidebar /></div>
+      <MobileNav />
       <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }} data-main-content>
         <header style={{
           height: '48px',
