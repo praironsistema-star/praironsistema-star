@@ -9,7 +9,7 @@ const LANG_MAP: Record<string, Locale> = {
   'pt-br': 'pt', 'pt-pt': 'pt', 'en-us': 'en', 'en-gb': 'en',
 }
 
-const PUBLIC_PATHS = ['/login', '/register', '/forgot-password', '/reset-password', '/onboarding', '/demo']
+const PUBLIC_PATHS = ['/login', '/register', '/forgot-password', '/reset-password', '/onboarding', '/demo', '/', '/landing2026', '/soluciones', '/precios']
 
 function detectLocale(request: NextRequest): Locale {
   const cookieLocale = request.cookies.get('locale')?.value
