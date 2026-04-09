@@ -8,7 +8,7 @@ const ANNOUNCEMENT_CONFIG = {
   message: '14 días gratis sin tarjeta de crédito · Onboarding personalizado incluido',
   cta: 'Activar prueba gratuita',
   ctaUrl: '/register',
-  expires: '2026-08-01',
+  expires: '2026-09-01',
 }
 
 function PraironLogo({ size = 32, white = false }: { size?: number; white?: boolean }) {
@@ -16,8 +16,8 @@ function PraironLogo({ size = 32, white = false }: { size?: number; white?: bool
   const a = white ? '#7ed4a0' : '#2d9e5f'
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
-      <path d="M20 3L35 12V28L20 37L5 28V12L20 3Z" fill={c} opacity="0.12"/>
-      <path d="M20 3L35 12V28L20 37L5 28V12L20 3Z" stroke={c} strokeWidth="1.5"/>
+      <path d="M20 3L35 12V28L20 37L5 28V12L20 3Z" fill={c} opacity="0.15"/>
+      <path d="M20 3L35 12V28L20 37L5 28V12L20 3Z" stroke={c} strokeWidth="1.5" fill="none"/>
       <path d="M14 20C14 16.686 16.686 14 20 14C23.314 14 26 16.686 26 20" stroke={a} strokeWidth="2" strokeLinecap="round"/>
       <circle cx="20" cy="20" r="2.5" fill={c}/>
       <path d="M20 22.5V28" stroke={c} strokeWidth="1.5" strokeLinecap="round"/>
@@ -26,36 +26,56 @@ function PraironLogo({ size = 32, white = false }: { size?: number; white?: bool
 }
 
 const SECTORES = [
-  { key: 'ganadero',   label: 'Ganadería',          icon: '🐄', color: '#b45309', bg: '#fef3e2', desc: 'Historial veterinario, producción de leche, trazabilidad individual y alertas de salud en tiempo real.', kpis: ['+18% leche/día', '-40% tiempo admin.', '0 animales sin control'] },
-  { key: 'avicola',    label: 'Avicultura',          icon: '🐔', color: '#dc2626', bg: '#fef2f2', desc: 'Galpones, lotes de engorde o postura, registro diario de mortalidad y alimentación por lote.', kpis: ['FCR 1.78 promedio', '-60% mortalidad', '100% trazabilidad'] },
-  { key: 'palma',      label: 'Palma de aceite',     icon: '🌴', color: '#065f46', bg: '#d1fae5', desc: 'Lotes FFB, extractora, eficiencia de extracción y análisis de laboratorio en un solo sistema.', kpis: ['+22% eficiencia ext.', '3 cert. ODS activas', '18.4 FFB/ha/año'] },
-  { key: 'vivero',     label: 'Vivero Palma',        icon: '🌱', color: '#047857', bg: '#ecfdf5', desc: 'Control de germinación, etapas de desarrollo, mortalidad en pre-vivero y vivero principal.', kpis: ['Germinación 94%', 'Control por bolsa', 'Despacho trazado'] },
-  { key: 'agricola',   label: 'Agricultura',         icon: '🌽', color: '#036446', bg: '#e8f5ef', desc: 'Ciclos de cultivo, control de plagas, recomendaciones IA por tipo de suelo y certificaciones ODS.', kpis: ['Score ODS 74/100', 'Cosecha predicha ±3d', '-30% pérdidas'] },
-  { key: 'organica',   label: 'Agric. Orgánica',     icon: '🌿', color: '#166534', bg: '#f0fdf4', desc: 'Trazabilidad de insumos orgánicos, certificaciones USDA/BCS, historial de aplicaciones y auditorías.', kpis: ['Certificación trazada', 'Cero agroquímicos', 'Auditoría digital'] },
-  { key: 'horticola',  label: 'Horticultura',        icon: '🥬', color: '#15803d', bg: '#dcfce7', desc: 'Ciclos cortos intensivos, control de riego, temperatura, plagas y cosecha escalonada.', kpis: ['Ciclos optimizados', 'Riego automatizado', 'Cosecha escalonada'] },
-  { key: 'fruticultura', label: 'Fruticultura',      icon: '🍓', color: '#be185d', bg: '#fdf2f8', desc: 'Fenología por variedad, historial de podas, fertilizaciones y proyección de cosecha por lote.', kpis: ['Fenología controlada', 'Poda trazada', 'Rendimiento/ha'] },
-  { key: 'acuicultura',label: 'Acuicultura',         icon: '🐟', color: '#0369a1', bg: '#e0f2fe', desc: 'Control de densidad, FCR acuícola, calidad de agua y proyección de cosecha.', kpis: ['FCR acuícola óptimo', '+25% supervivencia', 'Calidad agua 24/7'] },
-  { key: 'cafe',       label: 'Caficultura',         icon: '☕', color: '#92400e', bg: '#fef3c7', desc: 'Floración, cosecha selectiva, beneficio húmedo y análisis de taza para café de especialidad.', kpis: ['Cosecha selectiva +30%', 'Trazabilidad por lote', 'Análisis de taza'] },
-  { key: 'cacao',      label: 'Cacao',               icon: '🍫', color: '#7c2d12', bg: '#fff7ed', desc: 'Control de fermentación, secado, clasificación por calidad y exportación trazada.', kpis: ['Fermentación óptima', 'Clasificación automática', 'Exportación trazada'] },
-  { key: 'arroz',      label: 'Arroz',               icon: '🌾', color: '#ca8a04', bg: '#fefce8', desc: 'Manejo de láminas de agua, siembra directa o transplante, control de malezas y cosecha mecanizada.', kpis: ['Lámina controlada', 'Rendimiento t/ha', 'Cosecha mecanizada'] },
-  { key: 'cana',       label: 'Caña de Azúcar',      icon: '🌿', color: '#15803d', bg: '#dcfce7', desc: 'Control de corte, toneladas por hectárea, POL y liquidación directa con el ingenio.', kpis: ['TCH óptimo por suerte', 'Liquidación automática', 'POL en tiempo real'] },
-  { key: 'apicultura', label: 'Apicultura',          icon: '🍯', color: '#d97706', bg: '#fef9c3', desc: 'Registro de revisiones, estado de la reina, producción de miel y tratamientos sanitarios.', kpis: ['+40% producción/colmena', 'Varroa bajo control', 'Trazabilidad miel'] },
-  { key: 'floricultura', label: 'Floricultura',      icon: '💐', color: '#9333ea', bg: '#faf5ff', desc: 'Control de variedades, tallos por cama, punto de corte, postcosecha y exportación.', kpis: ['Tallo perfecto 98%', 'Postcosecha trazada', 'Exportación a tiempo'] },
-  { key: 'mixto',      label: 'MIXTO',               icon: '⊞',  color: '#475569', bg: '#f8fafc', desc: 'Combina múltiples módulos en una sola finca. Ganadería + cultivos + finanzas integradas.', kpis: ['Módulos combinados', 'Un solo dashboard', 'Finanzas unificadas'] },
+  { key:'ganadero',    label:'Ganadería',        icon:'🐄', color:'#d97706', bg:'#fef3e2', desc:'Historial veterinario, producción de leche, trazabilidad individual y alertas de salud en tiempo real.', kpis:['+18% leche/día','-40% tiempo admin.','0 animales sin control'], demo:{ animales:'1,847', leche:'1,240L', ods:'74/100', noah:'Temperatura alta (34°C). Asegura agua fresca en bebederos del lote norte. 2 bovinos requieren revisión.' } },
+  { key:'avicola',     label:'Avicultura',       icon:'🐔', color:'#dc2626', bg:'#fef2f2', desc:'Galpones, lotes de engorde o postura, registro diario de mortalidad y alimentación por lote.', kpis:['FCR 1.78','−60% mortalidad','100% trazabilidad'], demo:{ animales:'24,800', leche:'FCR 1.78', ods:'68/100', noah:'Lote 3 muestra conversión por encima del estándar. Revisar formulación de alimento esta semana.' } },
+  { key:'palma',       label:'Palma de aceite',  icon:'🌴', color:'#065f46', bg:'#d1fae5', desc:'Lotes FFB, extractora, eficiencia de extracción y análisis de laboratorio en un solo sistema.', kpis:['+22% eficiencia','3 cert. ODS','18.4 FFB/ha/año'], demo:{ animales:'320 ha', leche:'18.4 FFB', ods:'81/100', noah:'Sector B-4 con déficit hídrico leve. Programar riego de apoyo en próximas 72 horas.' } },
+  { key:'cafe',        label:'Caficultura',      icon:'☕', color:'#92400e', bg:'#fef3c7', desc:'Floración, cosecha selectiva, beneficio húmedo y análisis de taza para café de especialidad.', kpis:['+30% cosecha selectiva','Trazabilidad por lote','Score taza 84pts'], demo:{ animales:'45 ha', leche:'84 pts taza', ods:'79/100', noah:'Floración secundaria detectada en Lote 2. Momento ideal para abono foliar en 48 horas.' } },
+  { key:'cacao',       label:'Cacao',            icon:'🍫', color:'#7c2d12', bg:'#fff7ed', desc:'Control de fermentación, secado, clasificación por calidad y exportación trazada.', kpis:['Fermentación óptima','Clasificación automática','Exportación trazada'], demo:{ animales:'28 ha', leche:'78 pts', ods:'71/100', noah:'Fermentación del lote 7 en día 4. Voltear cajones hoy para perfil de sabor óptimo.' } },
+  { key:'arroz',       label:'Arroz',            icon:'🌾', color:'#ca8a04', bg:'#fefce8', desc:'Manejo de láminas de agua, siembra directa o transplante, control de malezas y cosecha mecanizada.', kpis:['Lámina controlada','6.8 t/ha rendimiento','Cosecha mecanizada'], demo:{ animales:'180 ha', leche:'6.8 t/ha', ods:'66/100', noah:'Lámina en bloque C por debajo del óptimo. Abrir compuertas de riego esta tarde.' } },
+  { key:'acuicultura', label:'Acuicultura',      icon:'🐟', color:'#0369a1', bg:'#e0f2fe', desc:'Control de densidad, FCR acuícola, calidad de agua y proyección de cosecha.', kpis:['FCR óptimo','+25% supervivencia','Calidad agua 24/7'], demo:{ animales:'12 estanques', leche:'FCR 1.4', ods:'72/100', noah:'Oxígeno disuelto en estanque 4 al 5.8 mg/L. Encender aireador nocturno preventivo.' } },
+  { key:'horticola',   label:'Horticultura',     icon:'🥬', color:'#15803d', bg:'#dcfce7', desc:'Ciclos cortos intensivos, control de riego, temperatura, plagas y cosecha escalonada.', kpis:['Ciclos optimizados','Riego automatizado','Cosecha escalonada'], demo:{ animales:'8 invernaderos', leche:'3 ciclos/año', ods:'75/100', noah:'Humedad relativa invernadero 2 al 88%. Riesgo de Botrytis. Activar ventilación.' } },
+  { key:'fruticultura',label:'Fruticultura',     icon:'🍓', color:'#be185d', bg:'#fdf2f8', desc:'Fenología por variedad, historial de podas, fertilizaciones y proyección de cosecha por lote.', kpis:['Fenología controlada','Poda trazada','Rendimiento/ha'], demo:{ animales:'60 ha', leche:'18 t/ha', ods:'70/100', noah:'Lote de mora en estado fenológico R3. Poda de formación recomendada esta semana.' } },
+  { key:'organica',    label:'Agric. Orgánica',  icon:'🌿', color:'#166534', bg:'#f0fdf4', desc:'Trazabilidad de insumos orgánicos, certificaciones USDA/BCS, historial de aplicaciones y auditorías.', kpis:['Certificación trazada','Cero agroquímicos','Auditoría digital'], demo:{ animales:'35 ha', leche:'Cert. USDA', ods:'92/100', noah:'Periodo de carencia del caldo bordelés cumplido en lote 1. Puede cosechar desde mañana.' } },
+  { key:'apicultura',  label:'Apicultura',       icon:'🍯', color:'#d97706', bg:'#fef9c3', desc:'Registro de revisiones, estado de la reina, producción de miel y tratamientos sanitarios.', kpis:['+40% producción/colmena','Varroa bajo control','Trazabilidad miel'], demo:{ animales:'120 colmenas', leche:'28 kg/colmena', ods:'77/100', noah:'Colmena 34 sin postura visible. Revisar estado de reina antes del domingo.' } },
+  { key:'cana',        label:'Caña de Azúcar',   icon:'🌾', color:'#15803d', bg:'#dcfce7', desc:'Control de corte, toneladas por hectárea, POL y liquidación directa con el ingenio.', kpis:['TCH óptimo por suerte','Liquidación automática','POL en tiempo real'], demo:{ animales:'240 ha', leche:'POL 14.2%', ods:'69/100', noah:'Suerte 8-A con madurez óptima. Programar corte en los próximos 5 días para máximo POL.' } },
+  { key:'floricultura',label:'Floricultura',     icon:'💐', color:'#9333ea', bg:'#faf5ff', desc:'Control de variedades, tallos por cama, punto de corte, postcosecha y exportación.', kpis:['Tallo perfecto 98%','Postcosecha trazada','Exportación a tiempo'], demo:{ animales:'18 invernaderos', leche:'98% calidad', ods:'74/100', noah:'Rosa variedad Freedom en punto de corte 2. Cosechar mañana para exportación del jueves.' } },
+  { key:'vivero',      label:'Vivero Palma',     icon:'🌱', color:'#047857', bg:'#ecfdf5', desc:'Control de germinación, etapas de desarrollo, mortalidad en pre-vivero y vivero principal.', kpis:['Germinación 94%','Control por bolsa','Despacho trazado'], demo:{ animales:'180,000 plántulas', leche:'94% germ.', ods:'80/100', noah:'Plántulas en semana 14 muestran amarillamiento en sector C. Aplicar hierro quelado hoy.' } },
+  { key:'ganadero2',   label:'Porcicultura',     icon:'��', color:'#be185d', bg:'#fdf2f8', desc:'Control de ciclos reproductivos, pesos por etapa, conversión alimenticia y bioseguridad.', kpis:['CA 2.4 óptimo','Ciclos controlados','Bioseguridad total'], demo:{ animales:'840 cerdos', leche:'CA 2.4', ods:'65/100', noah:'Cerda 112 en celo. Programar monta o inseminación en las próximas 12 horas.' } },
+  { key:'mixto',       label:'MIXTO',            icon:'⊞',  color:'#475569', bg:'#f8fafc', desc:'Combina múltiples módulos en una sola finca. Ganadería + cultivos + finanzas integradas.', kpis:['Módulos combinados','Un solo dashboard','Finanzas unificadas'], demo:{ animales:'Multisistema', leche:'—', ods:'76/100', noah:'Resumen semanal listo. Ganadería +3%, Café en floración, Finanzas: flujo positivo $12M.' } },
 ]
 
-const STATS = [
-  { value: 16, suffix: '+', label: 'Sectores productivos' },
-  { value: 48, suffix: '', label: 'Módulos integrados' },
-  { value: 99.8, suffix: '%', label: 'Uptime garantizado' },
-  { value: 14, suffix: '', label: 'Días gratis' },
+const NOAH_CHATS = [
+  { sector:'Ganadero · Hacienda El Progreso, Córdoba', msgs:[
+    { r:'user', m:'¿Cómo está la producción de leche esta semana?' },
+    { r:'noah', m:'Bajó 4.2% vs. semana anterior. Lote 7 muestra signos de mastitis subclínica en 3 vacas. Recomiendo revisión veterinaria hoy y ajuste de dieta con 200g más de concentrado.' },
+    { r:'user', m:'¿Y el Score ODS?' },
+    { r:'noah', m:'74/100 — subió 5 puntos este mes. El programa de bienestar animal está funcionando. Próximo paso: registrar los registros de agua para subir otros 3 puntos.' },
+  ]},
+  { sector:'Caficultor · Finca La Esperanza, Huila', msgs:[
+    { r:'user', m:'¿Cuándo hago la próxima fertilización?' },
+    { r:'noah', m:'En 8 días. Estás en etapa de llenado de grano — lo ideal es una aplicación foliar con calcio y boro para mejorar el peso del grano. Temperatura proyectada 19°C, ideal.' },
+    { r:'user', m:'¿Cómo vienen los precios del café?' },
+    { r:'noah', m:'NY cerró a 2.84 USD/libra. Con tu calidad (84 pts taza) puedes negociar prima de especialidad entre 0.30 y 0.55 USD adicionales. ¿Quieres que genere el informe para tu comprador?' },
+  ]},
+  { sector:'Avicultor · Granja Avícola San Luis, Cundinamarca', msgs:[
+    { r:'user', m:'Lote 3 tiene mortalidad alta esta semana' },
+    { r:'noah', m:'Detecté el patrón: la mortalidad subió el mismo día que cambió el proveedor de alimento. FCR también bajó de 1.78 a 1.94. Sugiero hacer análisis bromatológico urgente y volver al proveedor anterior mientras tanto.' },
+    { r:'user', m:'¿Cuándo es el próximo despacho?' },
+    { r:'noah', m:'Lote 3 sale en 11 días con peso proyectado de 2.4 kg. Si la mortalidad no mejora esta semana, el rendimiento baja 3.2%. ¿Activo alerta para el integrador?' },
+  ]},
+]
+
+const PASOS = [
+  { n:'01', title:'Registro en 3 minutos', desc:'Crea tu cuenta, selecciona tus industrias (puedes tener varias) y el sistema configura automáticamente tus módulos. Sin instalaciones, sin IT.' },
+  { n:'02', title:'Onboarding guiado por industria', desc:'NOAH te hace 5 preguntas sobre tu finca y construye tu perfil productivo. Ya desde el día 1 tienes dashboards con tus datos reales, no demos vacíos.' },
+  { n:'03', title:'Tu finca inteligente desde hoy', desc:'Registra, analiza y toma decisiones con IA. En campo sin internet, PRAIRON sigue funcionando y sincroniza cuando vuelve la señal.' },
 ]
 
 const TRUST_PILLARS = [
-  { icon: '🔐', title: 'Cifrado AES-256', desc: 'Toda tu información viaja y se almacena con cifrado de nivel bancario.' },
-  { icon: '🚫', title: 'Nunca vendemos tus datos', desc: 'A diferencia de plataformas que usan datos agrícolas para análisis de mercado, PRAIRON jamás comercializa tu información.' },
-  { icon: '📤', title: 'Tus datos, tu control', desc: 'Exporta toda tu información en cualquier momento. Eliminación en menos de 72 horas.' },
-  { icon: '🌍', title: 'GDPR + Habeas Data', desc: 'Ley 1581 Colombia · GDPR Europa · Auditado anualmente por terceros independientes.' },
+  { icon:'🔐', title:'Cifrado AES-256', desc:'Toda tu información viaja y se almacena con cifrado de nivel bancario. Ni siquiera nosotros accedemos sin tu autorización.' },
+  { icon:'🚫', title:'Nunca vendemos tus datos', desc:'Plataformas como Granular usaron datos de farmers para análisis de mercado. PRAIRON jamás comercializa ni comparte tu información.' },
+  { icon:'📤', title:'Tus datos, tu control', desc:'Exporta todo en cualquier momento. Solicita eliminación completa — ejecutada en menos de 72 horas.' },
+  { icon:'🌍', title:'GDPR + Habeas Data', desc:'Cumplimos Ley 1581 Colombia y GDPR Europa. Auditado anualmente por terceros independientes.' },
 ]
 
 const COMPARATIVA = [
@@ -67,61 +87,56 @@ const COMPARATIVA = [
   'ODS y sostenibilidad exportable',
   '16 sectores en una plataforma',
   'Módulo financiero completo',
-  'Datos 100% privados — sin venta a terceros',
+  'Datos privados — sin venta a terceros',
   'Precio accesible para LATAM',
+  'Multi-idioma nativo (ES/EN/PT)',
+  'App móvil con modo offline',
 ]
 
-const DEMO_TABS = [
-  { id: 'dashboard', label: 'Dashboard', icon: '▦' },
-  { id: 'noah', label: 'NOAH IA', icon: '◈' },
-  { id: 'finance', label: 'Finanzas', icon: '◎' },
-  { id: 'traz', label: 'Trazabilidad', icon: '◉' },
-]
-
-function AnimatedCounter({ target, suffix }: { target: number; suffix: string }) {
+function AnimatedCounter({ target, suffix, decimals = 0 }: { target: number; suffix: string; decimals?: number }) {
   const [count, setCount] = useState(0)
   const ref = useRef<HTMLSpanElement>(null)
   const started = useRef(false)
   useEffect(() => {
-    const observer = new IntersectionObserver(([e]) => {
+    const obs = new IntersectionObserver(([e]) => {
       if (e.isIntersecting && !started.current) {
         started.current = true
-        const start = Date.now()
+        const s = Date.now()
         const tick = () => {
-          const p = Math.min((Date.now() - start) / 1800, 1)
+          const p = Math.min((Date.now() - s) / 2000, 1)
           const ease = 1 - Math.pow(1 - p, 3)
-          setCount(Math.round(ease * target * 10) / 10)
+          setCount(Math.round(ease * target * Math.pow(10, decimals)) / Math.pow(10, decimals))
           if (p < 1) requestAnimationFrame(tick)
         }
         requestAnimationFrame(tick)
       }
     }, { threshold: 0.5 })
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [target])
-  return <span ref={ref}>{count}{suffix}</span>
+    if (ref.current) obs.observe(ref.current)
+    return () => obs.disconnect()
+  }, [target, decimals])
+  return <span ref={ref}>{decimals > 0 ? count.toFixed(decimals) : count}{suffix}</span>
 }
 
 function AnnouncementModal({ onClose }: { onClose: () => void }) {
   const cfg = ANNOUNCEMENT_CONFIG
   if (!cfg.enabled || new Date(cfg.expires) < new Date()) return null
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', animation: 'fadeIn 0.3s ease' }}>
-      <div style={{ background: '#fff', borderRadius: '20px', maxWidth: '440px', width: '100%', overflow: 'hidden', boxShadow: '0 32px 80px rgba(0,0,0,0.25)', animation: 'slideUp 0.4s cubic-bezier(0.34,1.56,0.64,1)' }}>
-        <div style={{ background: '#1a5c3a', padding: '28px 32px', textAlign: 'center' }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', animation: 'fadeIn .3s ease' }}>
+      <div style={{ background: '#fff', borderRadius: '20px', maxWidth: '440px', width: '100%', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.3)', animation: 'slideUp .4s cubic-bezier(.34,1.56,.64,1)' }}>
+        <div style={{ background: 'linear-gradient(135deg,#1a5c3a,#0f3d26)', padding: '28px 32px', textAlign: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '14px' }}>
-            <PraironLogo size={30} white /><span style={{ color: '#fff', fontSize: '18px', fontWeight: '700' }}>PRAIRON</span>
+            <PraironLogo size={28} white /><span style={{ color: '#fff', fontSize: '17px', fontWeight: '800', letterSpacing: '-0.5px' }}>PRAIRON</span>
           </div>
-          <h2 style={{ color: '#fff', fontSize: '20px', fontWeight: '700', margin: '0 0 8px', lineHeight: 1.3 }}>{cfg.title}</h2>
-          <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '14px', margin: 0 }}>{cfg.message}</p>
+          <h2 style={{ color: '#fff', fontSize: '19px', fontWeight: '700', margin: '0 0 8px', lineHeight: 1.3 }}>{cfg.title}</h2>
+          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', margin: 0, lineHeight: 1.5 }}>{cfg.message}</p>
         </div>
         <div style={{ padding: '22px 32px 28px' }}>
           <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '12px', padding: '14px', marginBottom: '16px', textAlign: 'center' }}>
-            <div style={{ fontSize: '26px', fontWeight: '800', color: '#1a5c3a' }}>14 días gratis</div>
-            <div style={{ fontSize: '12px', color: '#4b7a5e', marginTop: '3px' }}>Sin tarjeta · Cancela cuando quieras</div>
+            <div style={{ fontSize: '28px', fontWeight: '800', color: '#1a5c3a', letterSpacing: '-1px' }}>14 días gratis</div>
+            <div style={{ fontSize: '11px', color: '#4b7a5e', marginTop: '3px' }}>Sin tarjeta de crédito · Cancela cuando quieras</div>
           </div>
-          <Link href={cfg.ctaUrl} style={{ display: 'block', background: '#1a5c3a', color: '#fff', padding: '13px', borderRadius: '10px', textAlign: 'center', fontWeight: '600', fontSize: '14px', textDecoration: 'none', marginBottom: '10px' }} onClick={onClose}>{cfg.cta}</Link>
-          <button onClick={onClose} style={{ width: '100%', background: 'none', border: 'none', color: '#6b7280', fontSize: '13px', cursor: 'pointer', padding: '6px' }}>Continuar sin registrarme</button>
+          <Link href={cfg.ctaUrl} onClick={onClose} style={{ display: 'block', background: '#1a5c3a', color: '#fff', padding: '13px', borderRadius: '10px', textAlign: 'center', fontWeight: '700', fontSize: '14px', textDecoration: 'none', marginBottom: '10px' }}>{cfg.cta}</Link>
+          <button onClick={onClose} style={{ width: '100%', background: 'none', border: 'none', color: '#9ca3af', fontSize: '12px', cursor: 'pointer', padding: '6px' }}>Continuar sin registrarme</button>
         </div>
       </div>
     </div>
@@ -131,24 +146,35 @@ function AnnouncementModal({ onClose }: { onClose: () => void }) {
 export default function HomePage() {
   const [showModal, setShowModal] = useState(false)
   const [activeSector, setActiveSector] = useState(0)
-  const [activeDemo, setActiveDemo] = useState(0)
+  const [activeNoah, setActiveNoah] = useState(0)
+  const [noahMsg, setNoahMsg] = useState(0)
   const [scrollY, setScrollY] = useState(0)
   const [tickerPos, setTickerPos] = useState(0)
-  const demoInterval = useRef<ReturnType<typeof setInterval> | null>(null)
+  const [demoPulse, setDemoPulse] = useState(false)
+  const sectorInterval = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
-    if (!sessionStorage.getItem('prairon_modal')) setTimeout(() => setShowModal(true), 1200)
+    if (!sessionStorage.getItem('prairon_ann')) setTimeout(() => setShowModal(true), 1400)
   }, [])
 
   useEffect(() => {
-    const id = setInterval(() => setActiveSector(s => (s + 1) % SECTORES.length), 3000)
+    sectorInterval.current = setInterval(() => setActiveSector(s => (s + 1) % SECTORES.length), 3200)
+    return () => { if (sectorInterval.current) clearInterval(sectorInterval.current) }
+  }, [])
+
+  useEffect(() => {
+    const id = setInterval(() => setActiveNoah(n => (n + 1) % NOAH_CHATS.length), 6000)
     return () => clearInterval(id)
   }, [])
 
   useEffect(() => {
-    demoInterval.current = setInterval(() => setActiveDemo(t => (t + 1) % DEMO_TABS.length), 4000)
-    return () => { if (demoInterval.current) clearInterval(demoInterval.current) }
-  }, [])
+    setNoahMsg(0)
+    const id = setInterval(() => setNoahMsg(m => {
+      const max = NOAH_CHATS[activeNoah].msgs.length
+      return m < max - 1 ? m + 1 : m
+    }), 1800)
+    return () => clearInterval(id)
+  }, [activeNoah])
 
   useEffect(() => {
     const fn = () => setScrollY(window.scrollY)
@@ -158,233 +184,284 @@ export default function HomePage() {
 
   useEffect(() => {
     let pos = 0
-    const id = setInterval(() => {
-      pos = (pos + 0.4) % 100
-      setTickerPos(pos)
-    }, 30)
+    const id = setInterval(() => { pos = (pos + 0.35) % 100; setTickerPos(pos) }, 30)
     return () => clearInterval(id)
   }, [])
 
-  const closeModal = () => { setShowModal(false); sessionStorage.setItem('prairon_modal', '1') }
+  useEffect(() => {
+    const id = setInterval(() => setDemoPulse(p => !p), 2000)
+    return () => clearInterval(id)
+  }, [])
 
-  const clickDemo = (i: number) => {
-    setActiveDemo(i)
-    if (demoInterval.current) clearInterval(demoInterval.current)
-    demoInterval.current = setInterval(() => setActiveDemo(t => (t + 1) % DEMO_TABS.length), 4000)
-  }
-
-  const tickerLabels = SECTORES.map(s => `${s.icon} ${s.label}`).join('  ·  ')
+  const closeModal = () => { setShowModal(false); sessionStorage.setItem('prairon_ann', '1') }
+  const s = SECTORES[activeSector]
+  const chat = NOAH_CHATS[activeNoah]
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         html{scroll-behavior:smooth}
-        body{font-family:'DM Sans',sans-serif;background:#fafaf8;color:#1a1a1a;-webkit-font-smoothing:antialiased}
+        body{font-family:'DM Sans',sans-serif;background:#0d1f14;color:#fff;-webkit-font-smoothing:antialiased}
         .sora{font-family:'Sora',sans-serif}
         @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-        @keyframes slideUp{from{opacity:0;transform:translateY(24px) scale(0.97)}to{opacity:1;transform:none}}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-        @keyframes progressFill{from{width:0%}to{width:100%}}
-        .btn-primary{background:#1a5c3a;color:#fff;padding:13px 26px;border-radius:10px;font-weight:600;font-size:14px;text-decoration:none;transition:all 0.2s;display:inline-block;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
-        .btn-primary:hover{background:#166534;transform:translateY(-1px);box-shadow:0 8px 24px rgba(26,92,58,0.28)}
-        .btn-outline{background:transparent;color:#1a5c3a;padding:13px 26px;border-radius:10px;font-weight:600;font-size:14px;text-decoration:none;border:1.5px solid #1a5c3a;display:inline-block;transition:all 0.2s}
-        .btn-outline:hover{background:#f0fdf4}
-        .nav-link{color:#374151;text-decoration:none;font-size:14px;font-weight:500;padding:7px 14px;border-radius:8px;transition:all 0.2s}
-        .nav-link:hover{color:#1a5c3a;background:rgba(26,92,58,0.07)}
-        .demo-tab{cursor:pointer;padding:7px 12px;border-radius:7px;font-size:12px;font-weight:500;border:none;background:transparent;display:flex;align-items:center;gap:5px;color:#6b7280;transition:all 0.2s;font-family:'DM Sans',sans-serif}
-        .demo-tab.active{background:#fff;color:#1a5c3a;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
-        .trust-card{background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:16px;padding:22px;transition:all 0.3s}
-        .trust-card:hover{background:rgba(255,255,255,0.09);transform:translateY(-2px)}
+        @keyframes slideUp{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+        @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+        .btn-green{background:#22c55e;color:#052e16;padding:14px 28px;border-radius:10px;font-weight:700;font-size:15px;text-decoration:none;transition:all .2s;display:inline-block;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+        .btn-green:hover{background:#16a34a;transform:translateY(-1px);box-shadow:0 10px 28px rgba(34,197,94,.35)}
+        .btn-ghost{background:rgba(255,255,255,.08);color:#fff;padding:14px 28px;border-radius:10px;font-weight:600;font-size:15px;text-decoration:none;border:1px solid rgba(255,255,255,.18);display:inline-block;transition:all .2s}
+        .btn-ghost:hover{background:rgba(255,255,255,.14)}
+        .nav-link{color:rgba(255,255,255,.75);text-decoration:none;font-size:14px;font-weight:500;padding:7px 14px;border-radius:8px;transition:all .2s}
+        .nav-link:hover{color:#fff;background:rgba(255,255,255,.08)}
+        .sector-pill{cursor:pointer;transition:all .25s;border-radius:12px;padding:14px;border:0.5px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04)}
+        .sector-pill:hover{background:rgba(255,255,255,.09);transform:translateY(-2px)}
+        .msg-bubble{animation:msgIn .35s ease both}
         .container{max-width:1160px;margin:0 auto;padding:0 24px}
-        .glow{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse 2s ease-in-out infinite;box-shadow:0 0 0 3px rgba(34,197,94,0.2);flex-shrink:0}
-        .sector-pill{cursor:pointer;transition:all 0.25s;border:0.5px solid #e5e7eb;border-radius:12px;padding:14px;background:#fff}
-        .sector-pill:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,0.09)}
-        @media(max-width:768px){.hide-mob{display:none!important}.grid-2{grid-template-columns:1fr!important}.sectors-grid{grid-template-columns:repeat(2,1fr)!important}.stats-grid{grid-template-columns:repeat(2,1fr)!important}}
+        .glow{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse 2s ease-in-out infinite;box-shadow:0 0 0 3px rgba(34,197,94,.2);flex-shrink:0}
+        .cursor{display:inline-block;width:2px;height:12px;background:#22c55e;margin-left:2px;animation:blink 1s step-end infinite;vertical-align:middle}
+        @media(max-width:768px){.hide-mob{display:none!important}.grid-2{grid-template-columns:1fr!important}.sectors-grid{grid-template-columns:repeat(2,1fr)!important}.stats-grid{grid-template-columns:repeat(2,1fr)!important}.pasos-grid{grid-template-columns:1fr!important}}
       `}</style>
 
       {showModal && <AnnouncementModal onClose={closeModal} />}
 
       {/* TICKER */}
-      <div style={{ background: '#1a5c3a', height: '32px', overflow: 'hidden', position: 'relative' }}>
+      <div style={{ background: '#052e16', height: '30px', overflow: 'hidden', position: 'relative', borderBottom: '0.5px solid rgba(255,255,255,.06)' }}>
         <div style={{ position: 'absolute', whiteSpace: 'nowrap', transform: `translateX(-${tickerPos}%)`, display: 'flex', gap: '60px', height: '100%', alignItems: 'center' }}>
           {[0, 1, 2].map(rep => (
-            <span key={rep} style={{ fontSize: '11px', color: 'rgba(255,255,255,0.75)', fontWeight: '500', letterSpacing: '0.04em' }}>{tickerLabels}</span>
+            <span key={rep} style={{ fontSize: '11px', color: 'rgba(255,255,255,.55)', fontWeight: '500', letterSpacing: '.05em' }}>
+              {SECTORES.map(s => `${s.icon} ${s.label}`).join('  ·  ')}
+            </span>
           ))}
         </div>
       </div>
 
       {/* NAV */}
-      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: scrollY > 10 ? 'rgba(255,255,255,0.97)' : '#fff', backdropFilter: 'blur(12px)', borderBottom: '0.5px solid rgba(0,0,0,0.07)', transition: 'all 0.3s' }}>
-        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '60px' }}>
+      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: scrollY > 20 ? 'rgba(13,31,20,.97)' : 'transparent', backdropFilter: scrollY > 20 ? 'blur(16px)' : 'none', borderBottom: scrollY > 20 ? '0.5px solid rgba(255,255,255,.07)' : 'none', transition: 'all .3s' }}>
+        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '62px' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '9px', textDecoration: 'none' }}>
-            <PraironLogo size={28} />
-            <span className="sora" style={{ fontSize: '16px', fontWeight: '700', color: '#1a5c3a', letterSpacing: '-0.5px' }}>PRAIRON</span>
+            <PraironLogo size={28} white />
+            <span className="sora" style={{ fontSize: '16px', fontWeight: '800', color: '#fff', letterSpacing: '-0.5px' }}>PRAIRON</span>
           </Link>
           <div className="hide-mob" style={{ display: 'flex', gap: '2px' }}>
             <Link href="/soluciones" className="nav-link">Soluciones</Link>
+            <Link href="#noah" className="nav-link">NOAH IA</Link>
             <Link href="/precios" className="nav-link">Precios</Link>
             <Link href="/demo" className="nav-link">Demo</Link>
             <a href="#privacidad" className="nav-link">Seguridad</a>
           </div>
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <Link href="/login" className="nav-link">Iniciar sesión</Link>
-            <Link href="/register" className="btn-primary" style={{ padding: '9px 18px', fontSize: '13px' }}>Prueba gratis</Link>
+            <Link href="/login" className="nav-link">Ingresar</Link>
+            <Link href="/register" className="btn-green" style={{ padding: '9px 18px', fontSize: '13px' }}>Empezar gratis</Link>
           </div>
         </div>
       </nav>
 
-      {/* HERO */}
-      <section style={{ minHeight: '92vh', display: 'flex', alignItems: 'center', background: 'linear-gradient(155deg,#f0fdf4 0%,#fafaf8 50%,#f0f9ff 100%)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: '8%', right: '-6%', width: '500px', height: '500px', background: 'radial-gradient(circle,rgba(26,92,58,0.06) 0%,transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
-        <div className="container" style={{ width: '100%', padding: '60px 24px' }}>
-          <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '52px', alignItems: 'center' }}>
+      {/* ═══ HERO ═══ */}
+      <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', background: 'linear-gradient(160deg,#0d2818 0%,#0d1f14 40%,#051810 100%)', position: 'relative', overflow: 'hidden', paddingTop: '62px' }}>
+        <div style={{ position: 'absolute', top: '15%', right: '-5%', width: '600px', height: '600px', background: 'radial-gradient(circle,rgba(34,197,94,.07) 0%,transparent 65%)', borderRadius: '50%', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: '10%', left: '-8%', width: '400px', height: '400px', background: 'radial-gradient(circle,rgba(26,92,58,.1) 0%,transparent 65%)', borderRadius: '50%', pointerEvents: 'none' }} />
+        <div className="container" style={{ width: '100%', padding: '70px 24px' }}>
+          <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px', alignItems: 'center' }}>
 
-            <div style={{ animation: 'slideUp 0.7s ease both' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', background: '#dcfce7', color: '#15803d', padding: '5px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: '600', marginBottom: '20px', border: '0.5px solid #bbf7d0' }}>
-                <span className="glow" />16 sectores · LATAM
+            {/* LEFT */}
+            <div style={{ animation: 'fadeInUp .7s ease both' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', background: 'rgba(34,197,94,.12)', color: '#4ade80', padding: '5px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: '600', marginBottom: '24px', border: '0.5px solid rgba(34,197,94,.25)' }}>
+                <span className="glow" />Plataforma agroindustrial · 16 sectores · LATAM
               </div>
-              <h1 className="sora" style={{ fontSize: '48px', fontWeight: '800', lineHeight: 1.1, letterSpacing: '-2px', color: '#0f1a14', marginBottom: '16px' }}>
-                Tu finca, inteligente.<br /><span style={{ color: '#1a5c3a' }}>Toda en un sistema.</span>
+              <h1 className="sora" style={{ fontSize: '54px', fontWeight: '800', lineHeight: 1.05, letterSpacing: '-2.5px', color: '#fff', marginBottom: '20px' }}>
+                El sistema que<br />el agro colombiano<br /><span style={{ color: '#4ade80' }}>necesitaba.</span>
               </h1>
-              <p style={{ fontSize: '16px', color: '#4b5563', lineHeight: 1.7, marginBottom: '28px', maxWidth: '420px' }}>
-                PRAIRON integra ganadería, agricultura, finanzas, trazabilidad y NOAH IA. 16 sectores. Funciona sin internet.
+              <p style={{ fontSize: '17px', color: 'rgba(255,255,255,.65)', lineHeight: 1.7, marginBottom: '32px', maxWidth: '430px' }}>
+                Un solo sistema para toda tu operación. Con <strong style={{ color: '#fff', fontWeight: '600' }}>NOAH</strong>, la IA agroindustrial que conoce tu finca y trabaja contigo 24/7.
               </p>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '28px' }}>
-                <Link href="/register" className="btn-primary" style={{ fontSize: '15px', padding: '14px 28px' }}>Comenzar gratis — 14 días</Link>
-                <Link href="/demo" className="btn-outline" style={{ fontSize: '15px', padding: '14px 28px' }}>Ver demo en vivo</Link>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '32px' }}>
+                <Link href="/register" className="btn-green">Empezar gratis — sin tarjeta →</Link>
+                <Link href="/demo" className="btn-ghost">Ver demo en vivo</Link>
               </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px' }}>
-                {['🔒 Datos privados', '📴 Offline-First', '🌎 ES · EN · PT', '✓ Sin tarjeta'].map(b => (
-                  <span key={b} style={{ fontSize: '12px', color: '#6b7280' }}>{b}</span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+                {[['280K+', 'Productores en Colombia'], ['16', 'Sectores cubiertos'], ['98%', 'Uptime garantizado'], ['14', 'Días gratis']].map(([v, l]) => (
+                  <div key={l}>
+                    <div className="sora" style={{ fontSize: '22px', fontWeight: '800', color: '#fff', letterSpacing: '-1px' }}>{v}</div>
+                    <div style={{ fontSize: '11px', color: 'rgba(255,255,255,.45)', marginTop: '1px' }}>{l}</div>
+                  </div>
                 ))}
               </div>
             </div>
 
-            {/* DEMO */}
-            <div style={{ animation: 'slideUp 0.9s ease both' }}>
-              <div style={{ background: '#fff', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.1)', border: '0.5px solid rgba(0,0,0,0.06)' }}>
-                <div style={{ background: '#f3f4f6', padding: '10px 14px', borderBottom: '0.5px solid #e5e7eb', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ display: 'flex', gap: '5px' }}>
-                    {['#ef4444', '#f59e0b', '#22c55e'].map(c => <div key={c} style={{ width: '8px', height: '8px', borderRadius: '50%', background: c }} />)}
-                  </div>
-                  <div style={{ flex: 1, background: '#fff', borderRadius: '4px', padding: '3px 10px', fontSize: '11px', color: '#9ca3af', border: '0.5px solid #e5e7eb' }}>app.prairon.com</div>
-                  <span className="glow" />
-                </div>
-                <div style={{ display: 'flex', height: '380px' }}>
-                  <div style={{ width: '140px', background: '#1a5c3a', padding: '12px 0', flexShrink: 0 }}>
-                    <div style={{ padding: '6px 12px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <PraironLogo size={16} white /><span style={{ color: '#fff', fontSize: '10px', fontWeight: '700' }}>PRAIRON</span>
+            {/* RIGHT — DEMO CARD */}
+            <div style={{ animation: 'fadeInUp .9s ease both' }}>
+              <div style={{ background: 'rgba(255,255,255,.04)', border: '0.5px solid rgba(255,255,255,.1)', borderRadius: '20px', overflow: 'hidden', backdropFilter: 'blur(20px)' }}>
+                {/* card header */}
+                <div style={{ padding: '16px 20px', borderBottom: '0.5px solid rgba(255,255,255,.07)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', gap: '5px' }}>
+                      {['#ef4444', '#f59e0b', '#22c55e'].map(c => <div key={c} style={{ width: '9px', height: '9px', borderRadius: '50%', background: c }} />)}
                     </div>
-                    {['Dashboard', 'NOAH IA', 'Finanzas', 'Trazabilidad', 'Animales', 'Cultivos', 'Inventario', 'Tareo'].map((item, i) => (
-                      <div key={item} onClick={() => clickDemo(i < 4 ? i : 0)} style={{ padding: '6px 12px', fontSize: '10px', color: i === activeDemo ? '#fff' : 'rgba(255,255,255,0.5)', background: i === activeDemo ? 'rgba(255,255,255,0.13)' : 'transparent', borderLeft: i === activeDemo ? '2px solid #7ed4a0' : '2px solid transparent', fontWeight: i === activeDemo ? '600' : '400', cursor: 'pointer', transition: 'all 0.2s' }}>{item}</div>
+                    <span style={{ fontSize: '11px', color: 'rgba(255,255,255,.35)', marginLeft: '4px' }}>app.prairon.com</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <span className="glow" />
+                    <span style={{ fontSize: '10px', color: '#4ade80', fontWeight: '600' }}>NOH activo</span>
+                  </div>
+                </div>
+                {/* greeting */}
+                <div style={{ padding: '16px 20px 0', borderBottom: '0.5px solid rgba(255,255,255,.05)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                    <div>
+                      <div style={{ fontSize: '15px', fontWeight: '700', color: '#fff' }}>Buenos días, Carlos</div>
+                      <div style={{ fontSize: '11px', color: 'rgba(255,255,255,.4)', marginTop: '2px' }}>Hacienda El Progreso · Córdoba</div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '5px' }}>
+                      {SECTORES.slice(0, 4).map((sec, i) => (
+                        <div key={sec.key} onClick={() => { setActiveSector(i); if (sectorInterval.current) clearInterval(sectorInterval.current) }}
+                          style={{ width: '26px', height: '26px', borderRadius: '6px', background: i === activeSector % 4 ? 'rgba(34,197,94,.2)' : 'rgba(255,255,255,.06)', border: i === activeSector % 4 ? '0.5px solid rgba(34,197,94,.4)' : '0.5px solid rgba(255,255,255,.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', cursor: 'pointer', transition: 'all .2s' }}>
+                          {sec.icon}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  {/* KPI row */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '8px', marginBottom: '12px' }}>
+                    {[
+                      { label: 'Animales', value: s.demo.animales, color: '#4ade80' },
+                      { label: 'Producción', value: s.demo.leche, color: '#60a5fa' },
+                      { label: 'Score ODS', value: s.demo.ods, color: '#fbbf24' },
+                    ].map(k => (
+                      <div key={k.label} style={{ background: 'rgba(255,255,255,.05)', border: '0.5px solid rgba(255,255,255,.07)', borderRadius: '10px', padding: '10px 12px', textAlign: 'center' }}>
+                        <div style={{ fontSize: '16px', fontWeight: '800', color: k.color, letterSpacing: '-0.5px' }}>{k.value}</div>
+                        <div style={{ fontSize: '9px', color: 'rgba(255,255,255,.4)', marginTop: '2px' }}>{k.label}</div>
+                      </div>
                     ))}
                   </div>
-                  <div style={{ flex: 1, padding: '12px', background: '#fafaf8', overflow: 'hidden' }}>
-                    {activeDemo === 0 && (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                        <div style={{ background: '#1a5c3a', color: '#fff', padding: '9px 11px', borderRadius: '7px', fontSize: '11px', fontWeight: '600' }}>▦ Vista general</div>
-                        {[{ l: 'Ingresos del mes', v: '$48.2M', c: '+12.4%', up: true }, { l: 'Animales activos', v: '1,847', c: '+3.1%', up: true }, { l: 'Tareas pendientes', v: '23', c: '-18%', up: false }, { l: 'Score ODS', v: '74/100', c: '+5pts', up: true }].map(m => (
-                          <div key={m.l} style={{ background: '#fff', borderRadius: '6px', padding: '8px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '0.5px solid #e5e7eb' }}>
-                            <div><div style={{ fontSize: '9px', color: '#6b7280' }}>{m.l}</div><div style={{ fontSize: '14px', fontWeight: '700', color: '#111' }}>{m.v}</div></div>
-                            <div style={{ fontSize: '10px', fontWeight: '600', padding: '2px 6px', borderRadius: '20px', background: m.up ? '#dcfce7' : '#fee2e2', color: m.up ? '#16a34a' : '#dc2626' }}>{m.c}</div>
-                          </div>
-                        ))}
-                        <div style={{ background: '#fffbeb', border: '0.5px solid #fcd34d', borderRadius: '6px', padding: '8px 10px' }}>
-                          <div style={{ fontSize: '9px', fontWeight: '600', color: '#d97706' }}>⚡ NOAH IA</div>
-                          <div style={{ fontSize: '10px', color: '#92400e', marginTop: '2px', lineHeight: 1.4 }}>Riesgo fitosanitario Lote 3A — revisar en 48h</div>
-                        </div>
-                      </div>
-                    )}
-                    {activeDemo === 1 && (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                        <div style={{ background: '#1e40af', color: '#fff', padding: '9px 11px', borderRadius: '7px', fontSize: '11px', fontWeight: '600' }}>◈ NOAH IA — Tu asesor 24/7</div>
-                        {[{ r: 'user', m: '¿Cómo está la producción de leche?' }, { r: 'noah', m: 'Bajó 4.2% vs. semana anterior. Lote 7 muestra mastitis subclínica en 3 vacas. Revisión veterinaria hoy.' }, { r: 'user', m: '¿Cuándo fertilizar el maíz?' }, { r: 'noah', m: 'En 3-5 días. Humedad 64%, etapa V6, temperatura 22°C — condiciones ideales.' }].map((c, i) => (
-                          <div key={i} style={{ display: 'flex', flexDirection: c.r === 'user' ? 'row-reverse' : 'row', gap: '5px', alignItems: 'flex-start' }}>
-                            {c.r === 'noah' && <div style={{ width: '18px', height: '18px', borderRadius: '50%', background: '#1e40af', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', color: '#fff', fontWeight: '700', flexShrink: 0 }}>N</div>}
-                            <div style={{ background: c.r === 'user' ? '#1a5c3a' : '#f1f5f9', color: c.r === 'user' ? '#fff' : '#1e293b', padding: '6px 9px', borderRadius: '7px', fontSize: '10px', lineHeight: 1.5, maxWidth: '84%' }}>{c.m}</div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {activeDemo === 2 && (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                        <div style={{ background: '#7c3aed', color: '#fff', padding: '9px 11px', borderRadius: '7px', fontSize: '11px', fontWeight: '600' }}>◎ Rentabilidad por lote</div>
-                        {[{ l: 'Maíz — Lote 4B', m: '37%', s: 'good' }, { l: 'Ganadería Norte', m: '29%', s: 'ok' }, { l: 'Palma — Sector C', m: '17%', s: 'warn' }].map(r => (
-                          <div key={r.l} style={{ background: '#fff', borderRadius: '6px', padding: '8px 10px', border: '0.5px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ fontSize: '10px', fontWeight: '600', color: '#374151' }}>{r.l}</span>
-                            <span style={{ fontSize: '10px', fontWeight: '700', padding: '2px 6px', borderRadius: '20px', background: r.s === 'good' ? '#dcfce7' : r.s === 'ok' ? '#fef9c3' : '#fee2e2', color: r.s === 'good' ? '#16a34a' : r.s === 'ok' ? '#d97706' : '#dc2626' }}>Margen {r.m}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {activeDemo === 3 && (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                        <div style={{ background: '#b45309', color: '#fff', padding: '9px 11px', borderRadius: '7px', fontSize: '11px', fontWeight: '600' }}>◉ Trazabilidad QR por lote</div>
-                        {[{ lote: 'LOT-2026-0847', prod: 'Leche entera', steps: ['Ordeño', 'Enfriamiento', 'Laboratorio', 'Despacho'], done: 4 }, { lote: 'LOT-2026-0831', prod: 'Maíz seco', steps: ['Cosecha', 'Pesaje', 'Secado', 'Almacén'], done: 2 }].map(t => (
-                          <div key={t.lote} style={{ background: '#fff', borderRadius: '6px', padding: '8px 10px', border: '0.5px solid #e5e7eb' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                              <div style={{ fontSize: '9px', fontWeight: '600', color: '#b45309' }}>{t.lote}</div>
-                            </div>
-                            <div style={{ fontSize: '11px', fontWeight: '700', marginBottom: '5px' }}>{t.prod}</div>
-                            <div style={{ display: 'flex', gap: '3px', flexWrap: 'wrap' }}>
-                              {t.steps.map((s, j) => <span key={s} style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '20px', background: j < t.done ? '#dcfce7' : '#f3f4f6', color: j < t.done ? '#16a34a' : '#6b7280', fontWeight: '500' }}>{s}</span>)}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                </div>
+                {/* NOAH message */}
+                <div style={{ padding: '12px 20px 16px' }}>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'linear-gradient(135deg,#1e40af,#3b82f6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#fff', fontWeight: '800', flexShrink: 0 }}>N</div>
+                    <div style={{ background: 'rgba(34,197,94,.08)', border: '0.5px solid rgba(34,197,94,.2)', borderRadius: '10px', padding: '10px 12px', flex: 1 }}>
+                      <div style={{ fontSize: '9px', fontWeight: '700', color: '#4ade80', marginBottom: '4px', letterSpacing: '.04em' }}>NOAH IA</div>
+                      <div style={{ fontSize: '11px', color: 'rgba(255,255,255,.8)', lineHeight: 1.5 }}>{s.demo.noah}<span className="cursor" /></div>
+                    </div>
                   </div>
                 </div>
-                <div style={{ padding: '9px 12px', background: '#f9fafb', borderTop: '0.5px solid #e5e7eb' }}>
-                  <div style={{ display: 'flex', gap: '3px', marginBottom: '6px' }}>
-                    {DEMO_TABS.map((t, i) => <button key={t.id} className={`demo-tab${i === activeDemo ? ' active' : ''}`} onClick={() => clickDemo(i)}><span>{t.icon}</span>{t.label}</button>)}
-                  </div>
-                  <div style={{ height: '2px', background: '#e5e7eb', borderRadius: '1px', overflow: 'hidden' }}>
-                    <div key={activeDemo} style={{ height: '100%', background: '#1a5c3a', borderRadius: '1px', animation: 'progressFill 4s linear' }} />
-                  </div>
-                </div>
+              </div>
+              <div style={{ marginTop: '12px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                {['🔒 Datos privados', '📴 Offline-First', '🌎 ES · EN · PT', '✓ Sin tarjeta'].map(b => (
+                  <span key={b} style={{ fontSize: '11px', color: 'rgba(255,255,255,.4)', background: 'rgba(255,255,255,.04)', padding: '4px 10px', borderRadius: '20px', border: '0.5px solid rgba(255,255,255,.08)' }}>{b}</span>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* STATS */}
-      <section style={{ background: '#1a5c3a', padding: '40px 0' }}>
+      {/* ═══ STATS ═══ */}
+      <section style={{ background: '#052e16', padding: '44px 0', borderTop: '0.5px solid rgba(255,255,255,.06)', borderBottom: '0.5px solid rgba(255,255,255,.06)' }}>
         <div className="container">
           <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '20px' }}>
-            {STATS.map(s => (
-              <div key={s.label} style={{ textAlign: 'center' }}>
-                <div className="sora" style={{ fontSize: '38px', fontWeight: '800', color: '#fff', letterSpacing: '-2px' }}>
-                  <AnimatedCounter target={s.value} suffix={s.suffix} />
+            {[{ v: 280, s: 'K+', l: 'Productores activos', d: 0 }, { v: 16, s: '+', l: 'Sectores productivos', d: 0 }, { v: 99.8, s: '%', l: 'Uptime garantizado', d: 1 }, { v: 14, s: ' días', l: 'Prueba gratuita', d: 0 }].map(item => (
+              <div key={item.l} style={{ textAlign: 'center' }}>
+                <div className="sora" style={{ fontSize: '40px', fontWeight: '800', color: '#4ade80', letterSpacing: '-2px' }}>
+                  <AnimatedCounter target={item.v} suffix={item.s} decimals={item.d} />
                 </div>
-                <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', marginTop: '2px' }}>{s.label}</div>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,.45)', marginTop: '3px' }}>{item.l}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* SECTORES — 16 */}
-      <section style={{ padding: '80px 0', background: '#fafaf8' }}>
+      {/* ═══ NOAH IA ═══ */}
+      <section id="noah" style={{ padding: '90px 0', background: '#080f0b' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-            <h2 className="sora" style={{ fontSize: '34px', fontWeight: '800', letterSpacing: '-1.5px', marginBottom: '10px' }}>Un sistema para cada industria</h2>
-            <p style={{ fontSize: '15px', color: '#6b7280', maxWidth: '460px', margin: '0 auto' }}>16 sectores con módulos específicos — no adaptaciones genéricas.</p>
+          <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '64px', alignItems: 'center' }}>
+            <div>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', background: 'rgba(59,130,246,.12)', color: '#93c5fd', padding: '5px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: '600', marginBottom: '20px', border: '0.5px solid rgba(59,130,246,.25)' }}>
+                ◈ Inteligencia Artificial Agroindustrial
+              </div>
+              <h2 className="sora" style={{ fontSize: '40px', fontWeight: '800', color: '#fff', letterSpacing: '-1.5px', marginBottom: '16px', lineHeight: 1.1 }}>
+                NOAH — tu asesor<br /><span style={{ color: '#93c5fd' }}>24/7 en campo</span>
+              </h2>
+              <p style={{ fontSize: '16px', color: 'rgba(255,255,255,.6)', lineHeight: 1.7, marginBottom: '28px' }}>
+                NOAH no es un chatbot genérico. Conoce tu finca, tu historial, tu clima y tus animales. Responde en lenguaje natural y te da recomendaciones específicas para tu operación.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' }}>
+                {[
+                  'Alertas tempranas de enfermedades y plagas',
+                  'Recomendaciones de fertilización por suelo y clima',
+                  'Proyecciones de cosecha y análisis de rentabilidad',
+                  'Integración con datos climáticos en tiempo real',
+                  'Respuestas en español, inglés y portugués',
+                ].map(f => (
+                  <div key={f} style={{ display: 'flex', gap: '10px', alignItems: 'center', fontSize: '14px', color: 'rgba(255,255,255,.7)' }}>
+                    <span style={{ color: '#4ade80', fontSize: '16px', flexShrink: 0 }}>✓</span>{f}
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                {NOAH_CHATS.map((c, i) => (
+                  <button key={i} onClick={() => setActiveNoah(i)} style={{ padding: '6px 14px', borderRadius: '20px', border: 'none', fontSize: '11px', fontWeight: '600', cursor: 'pointer', background: i === activeNoah ? '#3b82f6' : 'rgba(255,255,255,.07)', color: i === activeNoah ? '#fff' : 'rgba(255,255,255,.5)', transition: 'all .2s' }}>
+                    {['Ganadero', 'Caficultor', 'Avicultor'][i]}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* NOAH CHAT */}
+            <div>
+              <div style={{ background: 'rgba(255,255,255,.03)', border: '0.5px solid rgba(255,255,255,.09)', borderRadius: '18px', overflow: 'hidden' }}>
+                <div style={{ padding: '14px 18px', borderBottom: '0.5px solid rgba(255,255,255,.06)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg,#1e3a8a,#3b82f6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', color: '#fff', fontWeight: '800' }}>N</div>
+                  <div>
+                    <div style={{ fontSize: '13px', fontWeight: '700', color: '#fff' }}>NOAH IA</div>
+                    <div style={{ fontSize: '10px', color: 'rgba(255,255,255,.4)' }}>{chat.sector}</div>
+                  </div>
+                  <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span className="glow" /><span style={{ fontSize: '10px', color: '#4ade80' }}>En línea</span>
+                  </div>
+                </div>
+                <div style={{ padding: '16px 18px', minHeight: '220px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {chat.msgs.slice(0, noahMsg + 1).map((msg, i) => (
+                    <div key={`${activeNoah}-${i}`} className="msg-bubble" style={{ display: 'flex', flexDirection: msg.r === 'user' ? 'row-reverse' : 'row', gap: '8px', alignItems: 'flex-start' }}>
+                      {msg.r === 'noah' && <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'linear-gradient(135deg,#1e3a8a,#3b82f6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', color: '#fff', fontWeight: '800', flexShrink: 0 }}>N</div>}
+                      <div style={{ background: msg.r === 'user' ? 'rgba(34,197,94,.12)' : 'rgba(255,255,255,.06)', border: `0.5px solid ${msg.r === 'user' ? 'rgba(34,197,94,.2)' : 'rgba(255,255,255,.08)'}`, padding: '9px 12px', borderRadius: '10px', fontSize: '12px', color: msg.r === 'user' ? 'rgba(255,255,255,.85)' : 'rgba(255,255,255,.8)', lineHeight: 1.55, maxWidth: '85%' }}>
+                        {msg.m}{i === noahMsg && msg.r === 'noah' && <span className="cursor" />}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ padding: '12px 18px', borderTop: '0.5px solid rgba(255,255,255,.06)', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <div style={{ flex: 1, background: 'rgba(255,255,255,.04)', border: '0.5px solid rgba(255,255,255,.08)', borderRadius: '8px', padding: '9px 12px', fontSize: '11px', color: 'rgba(255,255,255,.25)' }}>Pregunta algo sobre tu finca...</div>
+                  <div style={{ width: '30px', height: '30px', borderRadius: '8px', background: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px' }}>↑</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="sectors-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '12px' }}>
-            {SECTORES.map((s, i) => (
-              <div key={s.key} className="sector-pill" onClick={() => setActiveSector(i)}
-                style={{ background: i === activeSector ? s.bg : '#fff', border: i === activeSector ? `1.5px solid ${s.color}40` : '0.5px solid #e5e7eb', transform: i === activeSector ? 'translateY(-3px) scale(1.02)' : '', boxShadow: i === activeSector ? `0 12px 32px ${s.color}18` : '' }}>
-                <div style={{ fontSize: '22px', marginBottom: '6px' }}>{s.icon}</div>
-                <div style={{ fontSize: '11px', fontWeight: '700', color: i === activeSector ? s.color : '#374151', marginBottom: i === activeSector ? '7px' : '0' }}>{s.label}</div>
+        </div>
+      </section>
+
+      {/* ═══ 16 SECTORES ═══ */}
+      <section style={{ padding: '90px 0', background: '#0d1f14' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: '44px' }}>
+            <h2 className="sora" style={{ fontSize: '38px', fontWeight: '800', color: '#fff', letterSpacing: '-1.5px', marginBottom: '10px' }}>Un sistema para cada industria</h2>
+            <p style={{ fontSize: '15px', color: 'rgba(255,255,255,.45)', maxWidth: '480px', margin: '0 auto' }}>16 sectores con módulos específicos construidos desde cero — no adaptaciones genéricas.</p>
+          </div>
+          <div className="sectors-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '10px' }}>
+            {SECTORES.map((sec, i) => (
+              <div key={sec.key} className="sector-pill" onClick={() => { setActiveSector(i); if (sectorInterval.current) clearInterval(sectorInterval.current) }}
+                style={{ background: i === activeSector ? `${sec.color}18` : 'rgba(255,255,255,.03)', border: i === activeSector ? `1px solid ${sec.color}50` : '0.5px solid rgba(255,255,255,.07)', transform: i === activeSector ? 'translateY(-3px)' : '' }}>
+                <div style={{ fontSize: '22px', marginBottom: '6px' }}>{sec.icon}</div>
+                <div style={{ fontSize: '11px', fontWeight: '700', color: i === activeSector ? sec.color : 'rgba(255,255,255,.65)', marginBottom: i === activeSector ? '8px' : '0' }}>{sec.label}</div>
                 {i === activeSector && (
                   <>
-                    <div style={{ fontSize: '10px', color: '#6b7280', lineHeight: 1.5, marginBottom: '7px' }}>{s.desc}</div>
+                    <div style={{ fontSize: '10px', color: 'rgba(255,255,255,.45)', lineHeight: 1.5, marginBottom: '8px' }}>{sec.desc}</div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                      {s.kpis.map(k => <div key={k} style={{ fontSize: '9px', fontWeight: '600', color: s.color, background: `${s.color}15`, padding: '2px 7px', borderRadius: '4px', display: 'inline-block' }}>{k}</div>)}
+                      {sec.kpis.map(k => <div key={k} style={{ fontSize: '9px', fontWeight: '600', color: sec.color, background: `${sec.color}20`, padding: '2px 7px', borderRadius: '4px', display: 'inline-block' }}>{k}</div>)}
                     </div>
                   </>
                 )}
@@ -394,100 +471,133 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* PRIVACIDAD */}
-      <section id="privacidad" style={{ background: '#0f1a14', padding: '80px 0' }}>
+      {/* ═══ CÓMO FUNCIONA ═══ */}
+      <section style={{ padding: '90px 0', background: '#080f0b' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', background: 'rgba(34,197,94,0.1)', color: '#4ade80', padding: '5px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: '600', marginBottom: '16px', border: '0.5px solid rgba(34,197,94,0.2)' }}>🔐 Seguridad y privacidad de datos</div>
-            <h2 className="sora" style={{ fontSize: '34px', fontWeight: '800', color: '#fff', letterSpacing: '-1.5px', marginBottom: '12px' }}>Tu finca, tus datos.<br /><span style={{ color: '#4ade80' }}>Siempre y para siempre.</span></h2>
-            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.5)', maxWidth: '500px', margin: '0 auto', lineHeight: 1.7 }}>A diferencia de plataformas que usan tus datos para análisis de mercado, PRAIRON tiene una política clara: <strong style={{ color: '#fff' }}>tus datos son exclusivamente tuyos.</strong></p>
+          <div style={{ textAlign: 'center', marginBottom: '50px' }}>
+            <h2 className="sora" style={{ fontSize: '38px', fontWeight: '800', color: '#fff', letterSpacing: '-1.5px', marginBottom: '10px' }}>Listo en 3 minutos</h2>
+            <p style={{ fontSize: '15px', color: 'rgba(255,255,255,.45)', maxWidth: '420px', margin: '0 auto' }}>Sin instalaciones, sin IT, sin esperar semanas de configuración.</p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '14px', marginBottom: '32px' }}>
-            {TRUST_PILLARS.map(p => (
-              <div key={p.title} className="trust-card">
-                <div style={{ fontSize: '26px', marginBottom: '10px' }}>{p.icon}</div>
-                <h3 style={{ fontSize: '13px', fontWeight: '700', color: '#fff', marginBottom: '6px' }}>{p.title}</h3>
-                <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 }}>{p.desc}</p>
+          <div className="pasos-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '20px' }}>
+            {PASOS.map((p, i) => (
+              <div key={p.n} style={{ background: 'rgba(255,255,255,.03)', border: '0.5px solid rgba(255,255,255,.08)', borderRadius: '16px', padding: '28px 24px', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', top: '16px', right: '18px', fontSize: '40px', fontWeight: '800', color: 'rgba(255,255,255,.04)', fontFamily: 'Sora,sans-serif', letterSpacing: '-2px' }}>{p.n}</div>
+                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: i === 0 ? 'rgba(34,197,94,.15)' : i === 1 ? 'rgba(59,130,246,.15)' : 'rgba(168,85,247,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', marginBottom: '14px' }}>
+                  {['🚀', '🧠', '⚡'][i]}
+                </div>
+                <div style={{ fontSize: '15px', fontWeight: '700', color: '#fff', marginBottom: '8px' }}>{p.title}</div>
+                <div style={{ fontSize: '13px', color: 'rgba(255,255,255,.5)', lineHeight: 1.65 }}>{p.desc}</div>
               </div>
             ))}
           </div>
-          <div style={{ background: 'rgba(255,255,255,0.04)', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '14px', padding: '18px', display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'center', justifyContent: 'center' }}>
-            {[['Regulación', 'GDPR compliant'], ['Colombia', 'Habeas Data — Ley 1581'], ['Cifrado', 'AES-256 + TLS 1.3'], ['Servidores', 'LATAM · Redundantes'], ['Auditoría', 'Anual independiente']].map(([label, val]) => (
-              <div key={label} style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)', marginBottom: '2px' }}>{label}</div>
-                <div style={{ fontSize: '12px', fontWeight: '700', color: '#4ade80' }}>{val}</div>
+          <div style={{ marginTop: '28px', display: 'flex', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            {['📴 Sin internet funciona igual', '🔄 Sincronización automática', '📱 iOS y Android disponibles', '🔒 Datos cifrados en campo'].map(b => (
+              <span key={b} style={{ fontSize: '12px', color: 'rgba(255,255,255,.4)', background: 'rgba(255,255,255,.04)', padding: '6px 14px', borderRadius: '20px', border: '0.5px solid rgba(255,255,255,.07)' }}>{b}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ PRIVACIDAD ═══ */}
+      <section id="privacidad" style={{ padding: '90px 0', background: '#040a06' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: '44px' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', background: 'rgba(34,197,94,.08)', color: '#4ade80', padding: '5px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: '600', marginBottom: '18px', border: '0.5px solid rgba(34,197,94,.18)' }}>🔐 Seguridad y privacidad de datos</div>
+            <h2 className="sora" style={{ fontSize: '38px', fontWeight: '800', color: '#fff', letterSpacing: '-1.5px', marginBottom: '14px', lineHeight: 1.1 }}>
+              Tu finca, tus datos.<br /><span style={{ color: '#4ade80' }}>Siempre y para siempre.</span>
+            </h2>
+            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,.45)', maxWidth: '520px', margin: '0 auto', lineHeight: 1.7 }}>
+              Plataformas internacionales usan tu información agrícola para análisis de mercado. PRAIRON tiene una política clara: <strong style={{ color: '#fff' }}>tus datos son exclusivamente tuyos.</strong>
+            </p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '14px', marginBottom: '28px' }}>
+            {TRUST_PILLARS.map(p => (
+              <div key={p.title} style={{ background: 'rgba(255,255,255,.03)', border: '0.5px solid rgba(255,255,255,.07)', borderRadius: '14px', padding: '22px 18px', transition: 'all .3s' }}>
+                <div style={{ fontSize: '26px', marginBottom: '10px' }}>{p.icon}</div>
+                <div style={{ fontSize: '13px', fontWeight: '700', color: '#fff', marginBottom: '7px' }}>{p.title}</div>
+                <div style={{ fontSize: '11px', color: 'rgba(255,255,255,.4)', lineHeight: 1.6 }}>{p.desc}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ background: 'rgba(255,255,255,.03)', border: '0.5px solid rgba(255,255,255,.07)', borderRadius: '12px', padding: '18px', display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'center', justifyContent: 'center' }}>
+            {[['GDPR', 'compliant'], ['Colombia', 'Habeas Data — Ley 1581'], ['Cifrado', 'AES-256 + TLS 1.3'], ['Servidores', 'LATAM · Redundantes'], ['Auditoría', 'Anual independiente']].map(([l, v]) => (
+              <div key={l} style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '10px', color: 'rgba(255,255,255,.28)', marginBottom: '2px' }}>{l}</div>
+                <div style={{ fontSize: '12px', fontWeight: '700', color: '#4ade80' }}>{v}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* COMPARATIVA */}
-      <section style={{ padding: '80px 0' }}>
+      {/* ═══ COMPARATIVA ═══ */}
+      <section style={{ padding: '90px 0', background: '#0d1f14' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-            <h2 className="sora" style={{ fontSize: '34px', fontWeight: '800', letterSpacing: '-1.5px', marginBottom: '10px' }}>PRAIRON vs. el resto</h2>
-            <p style={{ fontSize: '14px', color: '#6b7280' }}>Granular, Trimble, FarmLogs — buenos para EE.UU. PRAIRON fue construido para LATAM.</p>
+          <div style={{ textAlign: 'center', marginBottom: '44px' }}>
+            <h2 className="sora" style={{ fontSize: '38px', fontWeight: '800', color: '#fff', letterSpacing: '-1.5px', marginBottom: '10px' }}>PRAIRON vs. el resto</h2>
+            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,.45)' }}>Granular, Trimble, FarmLogs — construidos para EE.UU. PRAIRON nació en LATAM, para LATAM.</p>
           </div>
-          <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 90px 90px', background: '#f9fafb', borderRadius: '10px 10px 0 0', padding: '10px 16px', border: '0.5px solid #e5e7eb', borderBottom: 'none' }}>
-              <div style={{ fontSize: '10px', color: '#9ca3af', fontWeight: '600' }}>CARACTERÍSTICA</div>
-              <div style={{ fontSize: '10px', fontWeight: '700', color: '#1a5c3a', textAlign: 'center' }}>PRAIRON</div>
-              <div style={{ fontSize: '10px', fontWeight: '600', color: '#9ca3af', textAlign: 'center' }}>Competencia</div>
+          <div style={{ maxWidth: '640px', margin: '0 auto' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 90px 90px', background: 'rgba(255,255,255,.04)', borderRadius: '10px 10px 0 0', padding: '11px 18px', border: '0.5px solid rgba(255,255,255,.08)', borderBottom: 'none' }}>
+              <div style={{ fontSize: '10px', color: 'rgba(255,255,255,.35)', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '.05em' }}>Característica</div>
+              <div style={{ fontSize: '11px', fontWeight: '700', color: '#4ade80', textAlign: 'center' }}>PRAIRON</div>
+              <div style={{ fontSize: '11px', fontWeight: '600', color: 'rgba(255,255,255,.3)', textAlign: 'center' }}>Competencia</div>
             </div>
             {COMPARATIVA.map((row, i) => (
-              <div key={row} style={{ display: 'grid', gridTemplateColumns: '1fr 90px 90px', padding: '10px 16px', background: '#fff', border: '0.5px solid #e5e7eb', borderTop: 'none', borderRadius: i === COMPARATIVA.length - 1 ? '0 0 10px 10px' : '0' }}>
-                <div style={{ fontSize: '12px', color: '#374151' }}>{row}</div>
-                <div style={{ textAlign: 'center', color: '#16a34a', fontSize: '14px' }}>✓</div>
-                <div style={{ textAlign: 'center', color: '#d1d5db', fontSize: '14px' }}>✕</div>
+              <div key={row} style={{ display: 'grid', gridTemplateColumns: '1fr 90px 90px', padding: '11px 18px', background: i % 2 === 0 ? 'rgba(255,255,255,.02)' : 'rgba(255,255,255,.04)', border: '0.5px solid rgba(255,255,255,.06)', borderTop: 'none', borderRadius: i === COMPARATIVA.length - 1 ? '0 0 10px 10px' : '0' }}>
+                <div style={{ fontSize: '13px', color: 'rgba(255,255,255,.7)' }}>{row}</div>
+                <div style={{ textAlign: 'center', color: '#4ade80', fontSize: '15px', fontWeight: '700' }}>✓</div>
+                <div style={{ textAlign: 'center', color: 'rgba(255,255,255,.2)', fontSize: '15px' }}>✕</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section style={{ background: 'linear-gradient(135deg,#1a5c3a 0%,#0f3d26 100%)', padding: '80px 0' }}>
+      {/* ═══ CTA ═══ */}
+      <section style={{ padding: '100px 0', background: 'linear-gradient(160deg,#052e16,#0d1f14)' }}>
         <div className="container" style={{ textAlign: 'center' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}><PraironLogo size={48} white /></div>
-          <h2 className="sora" style={{ fontSize: '38px', fontWeight: '800', color: '#fff', letterSpacing: '-1.5px', marginBottom: '12px' }}>Empieza hoy — gratis por 14 días</h2>
-          <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.65)', marginBottom: '28px', maxWidth: '400px', margin: '0 auto 28px', lineHeight: 1.6 }}>Sin tarjeta. Sin contratos. Onboarding personalizado incluido.</p>
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/register" style={{ background: '#fff', color: '#1a5c3a', padding: '14px 32px', borderRadius: '10px', fontWeight: '700', fontSize: '14px', textDecoration: 'none' }}>Crear cuenta gratis</Link>
-            <Link href="/demo" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '14px 32px', borderRadius: '10px', fontWeight: '600', fontSize: '14px', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.25)' }}>Ver demo guiado</Link>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '22px' }}><PraironLogo size={52} white /></div>
+          <h2 className="sora" style={{ fontSize: '44px', fontWeight: '800', color: '#fff', letterSpacing: '-2px', marginBottom: '14px', lineHeight: 1.05 }}>
+            Empieza hoy — gratis<br />por 14 días
+          </h2>
+          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,.55)', marginBottom: '36px', maxWidth: '400px', margin: '0 auto 36px', lineHeight: 1.6 }}>Sin tarjeta de crédito. Sin contratos. Onboarding personalizado incluido. Cancela cuando quieras.</p>
+          <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link href="/register" className="btn-green" style={{ fontSize: '16px', padding: '16px 36px' }}>Crear cuenta gratis</Link>
+            <Link href="/demo" className="btn-ghost" style={{ fontSize: '16px', padding: '16px 36px' }}>Ver demo guiado</Link>
           </div>
-          <p style={{ marginTop: '16px', fontSize: '11px', color: 'rgba(255,255,255,0.35)' }}>🔒 Tus datos son tuyos · Nunca los vendemos · GDPR + Habeas Data Colombia</p>
+          <p style={{ marginTop: '20px', fontSize: '11px', color: 'rgba(255,255,255,.28)' }}>🔒 Tus datos son tuyos · Nunca los vendemos · GDPR + Habeas Data Colombia</p>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer style={{ background: '#0a110d', padding: '44px 0 22px' }}>
+      {/* ═══ FOOTER ═══ */}
+      <footer style={{ background: '#020a04', padding: '50px 0 24px', borderTop: '0.5px solid rgba(255,255,255,.05)' }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '32px', marginBottom: '32px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '36px', marginBottom: '36px' }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                <PraironLogo size={24} white /><span className="sora" style={{ color: '#fff', fontWeight: '700', fontSize: '14px' }}>PRAIRON</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                <PraironLogo size={24} white /><span className="sora" style={{ color: '#fff', fontWeight: '800', fontSize: '15px' }}>PRAIRON</span>
               </div>
-              <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', lineHeight: 1.7, maxWidth: '240px' }}>Plataforma agroindustrial con IA para LATAM. 16 sectores en un solo sistema.</p>
-              <div style={{ marginTop: '12px', padding: '9px 11px', background: 'rgba(255,255,255,0.04)', borderRadius: '8px', border: '0.5px solid rgba(255,255,255,0.07)' }}>
-                <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.3)', marginBottom: '2px' }}>Protección de datos</div>
-                <div style={{ fontSize: '10px', color: '#4ade80', fontWeight: '600' }}>🔐 GDPR · Habeas Data · AES-256</div>
+              <p style={{ fontSize: '12px', color: 'rgba(255,255,255,.3)', lineHeight: 1.7, maxWidth: '260px', marginBottom: '16px' }}>Plataforma agroindustrial con IA para LATAM. 16 sectores. NOAH IA. Funciona sin internet.</p>
+              <div style={{ padding: '10px 12px', background: 'rgba(255,255,255,.03)', borderRadius: '8px', border: '0.5px solid rgba(255,255,255,.06)' }}>
+                <div style={{ fontSize: '9px', color: 'rgba(255,255,255,.28)', marginBottom: '3px' }}>Protección de datos</div>
+                <div style={{ fontSize: '11px', color: '#4ade80', fontWeight: '600' }}>🔐 GDPR · Habeas Data · AES-256</div>
               </div>
             </div>
             {[
-              { title: 'Producto', links: ['Soluciones', 'Precios', 'Demo', 'NOAH IA'] },
-              { title: 'Industrias', links: ['Ganadería', 'Avicultura', 'Caficultura', 'Cacao', 'Floricultura'] },
-              { title: 'Legal', links: ['Privacidad', 'Términos', 'Habeas Data', 'Contacto'] },
+              { title: 'Producto', links: ['Soluciones', 'Precios', 'Demo', 'NOAH IA', 'Actualizaciones'] },
+              { title: 'Industrias', links: ['Ganadería', 'Caficultura', 'Avicultura', 'Palma', 'Cacao', 'Floricultura'] },
+              { title: 'Legal', links: ['Política de Privacidad', 'Términos de uso', 'Habeas Data', 'Seguridad', 'Contacto'] },
             ].map(col => (
               <div key={col.title}>
-                <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.25)', fontWeight: '600', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{col.title}</div>
-                {col.links.map(l => <div key={l} style={{ marginBottom: '6px' }}><Link href="#" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}>{l}</Link></div>)}
+                <div style={{ fontSize: '10px', color: 'rgba(255,255,255,.25)', fontWeight: '600', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '.06em' }}>{col.title}</div>
+                {col.links.map(l => <div key={l} style={{ marginBottom: '7px' }}><Link href="#" style={{ fontSize: '12px', color: 'rgba(255,255,255,.38)', textDecoration: 'none' }}>{l}</Link></div>)}
               </div>
             ))}
           </div>
-          <div style={{ borderTop: '0.5px solid rgba(255,255,255,0.07)', paddingTop: '18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-            <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.25)' }}>© 2026 PRAIRON · Hecho en LATAM</div>
-            <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.25)' }}>ES · EN · PT · Colombia · México · Perú · Brasil</div>
+          <div style={{ borderTop: '0.5px solid rgba(255,255,255,.06)', paddingTop: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+            <div style={{ fontSize: '11px', color: 'rgba(255,255,255,.22)' }}>© 2026 PRAIRON · Todos los derechos reservados · Hecho en LATAM</div>
+            <div style={{ fontSize: '11px', color: 'rgba(255,255,255,.22)' }}>ES · EN · PT · Colombia · México · Perú · Brasil · Ecuador</div>
           </div>
         </div>
       </footer>
