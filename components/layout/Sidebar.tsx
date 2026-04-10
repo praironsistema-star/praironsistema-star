@@ -27,6 +27,11 @@ const NAV = [
       { href: '/apicultura',      icon: '🍯',  label: 'Apicultura',       module: 'APICULTURA' },
       { href: '/cacao',           icon: '🍫',  label: 'Cacao',            module: 'CACAO' },
       { href: '/arroz',           icon: '🌾',  label: 'Arroz',            module: 'ARROZ' },
+      { href: '/horticultura',    icon: '🥬',  label: 'Horticultura',     module: 'MIXTO' },
+      { href: '/vivero',          icon: '🌱',  label: 'Vivero Palma',     module: 'PALMA' },
+      { href: '/floricultura',    icon: '💐',  label: 'Floricultura',     module: 'MIXTO' },
+      { href: '/fruticultura',    icon: '🍓',  label: 'Fruticultura',     module: 'MIXTO' },
+      { href: '/organica',        icon: '🌿',  label: 'Agro Orgánica',    module: 'MIXTO' },
       { href: '/trazabilidad',    icon: '🔗',  label: 'Trazabilidad QR' },
     ]
   },
