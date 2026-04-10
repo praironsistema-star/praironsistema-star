@@ -51,10 +51,15 @@ function CacaoPage() {
   }
 
   async function deletePlot(id: string, name: string) {
-    const ok = await confirm({ title:'Eliminar parcela', message:`¿Eliminar "${name}"?`, danger:true, confirmText:'Eliminar' })
+    const ok = await confirm({ title:'Eliminar', message:`¿Eliminar "${name}"?`, danger:true, confirmText:'Eliminar' })
     if (!ok) return
-    try { await api.delete(\`/cacao/plots/\${id}\`); loadAll(); toastSuccess('Parcela eliminada') }
-    catch { toastError('Error al eliminar') }
+    try {
+      await api.delete(`/cacao/plots/${id}`)
+      loadAll()
+      toastSuccess('Parcela eliminada')
+    } catch {
+      toastError('Error al eliminar')
+    }
   }
 
   const totalArea = plots.reduce((s,p) => s+(p.area||0), 0)

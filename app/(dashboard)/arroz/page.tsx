@@ -51,10 +51,15 @@ function ArrozPage() {
   }
 
   async function deletePlot(id: string, name: string) {
-    const ok = await confirm({ title:'Eliminar lote', message:`¿Eliminar "${name}"?`, danger:true, confirmText:'Eliminar' })
+    const ok = await confirm({ title:'Eliminar', message:`¿Eliminar "${name}"?`, danger:true, confirmText:'Eliminar' })
     if (!ok) return
-    try { await api.delete(\`/arroz/plots/\${id}\`); loadAll(); toastSuccess('Lote eliminado') }
-    catch { toastError('Error al eliminar') }
+    try {
+      await api.delete(`/arroz/plots/${id}`)
+      loadAll()
+      toastSuccess('Lote eliminado')
+    } catch {
+      toastError('Error al eliminar')
+    }
   }
 
   const totalArea = plots.reduce((s,p) => s+(p.area||0), 0)
