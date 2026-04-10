@@ -305,7 +305,7 @@ export default function DemoPage() {
       <nav className={`nav${scrolled ? ' scrolled' : ''}`}>
         <Link href="/" className="nav-logo">
           <img src="/images/logo-white.png" alt="PRAIRON" style={{ height: "28px", width: "auto", objectFit: "contain" }} />
-          <span className="nav-logo-text">PRAI<em>RON</em></span>
+          
         </Link>
         <div className="nav-links">
           {NAV_LINKS.map(l => (
