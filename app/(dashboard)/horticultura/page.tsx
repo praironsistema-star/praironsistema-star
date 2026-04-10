@@ -246,5 +246,5 @@ function HorticulturaPage() {
 }
 
 export default function Page() {
-  return <IndustryGuard module="MIXTO"><HorticulturaPage /></IndustryGuard>
+  return <IndustryGuard module="HORTICULTURA"><HorticulturaPage /></IndustryGuard>
 }

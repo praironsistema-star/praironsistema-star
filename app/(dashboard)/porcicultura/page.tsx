@@ -281,5 +281,5 @@ function PorciculturaPage() {
 }
 
 export default function Page() {
-  return <IndustryGuard module="MIXTO"><PorciculturaPage /></IndustryGuard>
+  return <IndustryGuard module="PORCICULTURA"><PorciculturaPage /></IndustryGuard>
 }

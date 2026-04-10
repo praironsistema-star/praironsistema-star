@@ -200,5 +200,5 @@ function FruticulturaPage() {
 }
 
 export default function Page() {
-  return <IndustryGuard module="MIXTO"><FruticulturaPage /></IndustryGuard>
+  return <IndustryGuard module="FRUTICULTURA"><FruticulturaPage /></IndustryGuard>
 }

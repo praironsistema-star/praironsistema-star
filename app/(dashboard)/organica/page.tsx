@@ -256,5 +256,5 @@ function OrganicaPage() {
 }
 
 export default function Page() {
-  return <IndustryGuard module="MIXTO"><OrganicaPage /></IndustryGuard>
+  return <IndustryGuard module="ORGANICA"><OrganicaPage /></IndustryGuard>
 }
