@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import api from '@/lib/api'
 import { useI18n } from '@/lib/i18n'
@@ -95,6 +96,36 @@ export default function NohAssistant() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, typing])
 
+  const pathname = usePathname()
+
+  function getSector(): string {
+    const map: Record<string, string> = {
+      '/caficultura': 'caficultura',
+      '/cacao': 'cacao',
+      '/arroz': 'arroz',
+      '/cana': 'caña de azúcar',
+      '/horticultura': 'horticultura',
+      '/acuicultura': 'acuicultura',
+      '/apicultura': 'apicultura',
+      '/ganaderia': 'ganadería bovina',
+      '/avicultura': 'avicultura',
+      '/palma': 'palma de aceite',
+      '/animals': 'ganadería',
+      '/crops': 'cultivos',
+      '/farms': 'fincas',
+      '/inventory': 'inventario',
+      '/tasks': 'tareas',
+      '/ods': 'sostenibilidad ODS',
+      '/reports': 'reportes',
+      '/contador': 'finanzas',
+      '/ventas': 'ventas',
+    }
+    for (const [route, sector] of Object.entries(map)) {
+      if (pathname.startsWith(route)) return sector
+    }
+    return 'general'
+  }
+
   const lastNohMsg  = [...messages].reverse().find(m => !m.isUser) ?? null
   const currentPose = getPose(typing, lastNohMsg, isWelcome)
 
@@ -111,7 +142,8 @@ export default function NohAssistant() {
     setTyping(true)
 
     try {
-      const res   = await api.post('/noh/chat', { message: trimmed })
+      const sector = getSector()
+      const res   = await api.post('/noh/chat', { message: trimmed, sector })
       const reply = res.data?.response || res.data?.message || getFallback(trimmed)
       setMessages(prev => [...prev, {
         id: Date.now().toString() + 'r', text: reply, isUser: false,
