@@ -295,7 +295,7 @@ export default function RegisterPage() {
 
           <nav className="left-nav">
             <Link href="/" className="logo">
-              <div className="logo-mark">P</div>
+              <img src="/images/logo-white.png" alt="PRAIRON" style={{ height: "28px", width: "auto", objectFit: "contain" }} />
               <span className="logo-text">PRAI<span>RON</span></span>
             </Link>
             <Link href="/" className="back-link">← Volver al inicio</Link>

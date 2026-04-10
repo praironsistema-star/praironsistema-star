@@ -2,19 +2,7 @@
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
 
-function PraironLogo({ size = 32, white = false }: { size?: number; white?: boolean }) {
-  const c = white ? '#ffffff' : '#1a5c3a'
-  const a = white ? '#7ed4a0' : '#2d9e5f'
-  return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
-      <path d="M20 3L35 12V28L20 37L5 28V12L20 3Z" fill={c} opacity="0.15"/>
-      <path d="M20 3L35 12V28L20 37L5 28V12L20 3Z" stroke={c} strokeWidth="1.5" fill="none"/>
-      <path d="M14 20C14 16.686 16.686 14 20 14C23.314 14 26 16.686 26 20" stroke={a} strokeWidth="2" strokeLinecap="round"/>
-      <circle cx="20" cy="20" r="2.5" fill={c}/>
-      <path d="M20 22.5V28" stroke={c} strokeWidth="1.5" strokeLinecap="round"/>
-    </svg>
-  )
-}
+
 
 const NOAH_MESSAGES = [
   {
@@ -148,7 +136,7 @@ export default function LoginPage() {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-          <PraironLogo size={26} white />
+          <img src="/images/logo-white.png" alt="PRAIRON" style={{ height: "26px", width: "auto", objectFit: "contain" }} />
           <span className="sora" style={{ fontSize: '15px', fontWeight: '800', color: '#fff', letterSpacing: '-0.5px' }}>PRAIRON</span>
         </Link>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -270,7 +258,7 @@ export default function LoginPage() {
             {/* Logo + title */}
             <div style={{ marginBottom: '32px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '24px' }}>
-                <PraironLogo size={32} white />
+                <img src="/images/logo-white.png" alt="PRAIRON" style={{ height: "32px", width: "auto", objectFit: "contain" }} />
                 <span className="sora" style={{ fontSize: '18px', fontWeight: '800', color: '#fff', letterSpacing: '-0.5px' }}>PRAIRON</span>
               </div>
               <h2 className="sora" style={{ fontSize: '26px', fontWeight: '800', color: '#fff', letterSpacing: '-1px', lineHeight: 1.1, marginBottom: '8px' }}>
