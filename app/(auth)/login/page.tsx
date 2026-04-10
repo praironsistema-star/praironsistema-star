@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
+import { login } from '@/lib/auth'
 
 
 
@@ -45,6 +46,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const [activeCard, setActiveCard] = useState(0)
   const [noahText, setNoahText] = useState('')
   const [noahIdx, setNoahIdx] = useState(0)
@@ -81,10 +83,22 @@ export default function LoginPage() {
     return () => window.removeEventListener('scroll', fn)
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setTimeout(() => setLoading(false), 2000)
+    setError('')
+    try {
+      const user = await login(email, password)
+      // Si la empresa no tiene industryType configurado → onboarding
+      if (!user.industryType && !user.industryModules?.length) {
+        window.location.href = '/onboarding'
+      } else {
+        window.location.href = '/dashboard'
+      }
+    } catch (err: any) {
+      setError('Credenciales incorrectas. Verifica tu email y contraseña.')
+      setLoading(false)
+    }
   }
 
   const card = NOAH_MESSAGES[activeCard]

@@ -82,7 +82,7 @@ export default function RegisterPage() {
     setLoading(true)
     await new Promise(r => setTimeout(r, 1800))
     setLoading(false)
-    window.location.href = '/dashboard'
+    window.location.href = '/onboarding'
   }
 
   return (
