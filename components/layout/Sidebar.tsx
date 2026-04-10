@@ -32,6 +32,7 @@ const NAV = [
       { href: '/floricultura',    icon: '💐',  label: 'Floricultura',     module: 'MIXTO' },
       { href: '/fruticultura',    icon: '🍓',  label: 'Fruticultura',     module: 'MIXTO' },
       { href: '/organica',        icon: '🌿',  label: 'Agro Orgánica',    module: 'MIXTO' },
+      { href: '/porcicultura',    icon: '🐖',  label: 'Porcicultura',     module: 'MIXTO' },
       { href: '/trazabilidad',    icon: '🔗',  label: 'Trazabilidad QR' },
     ]
   },
