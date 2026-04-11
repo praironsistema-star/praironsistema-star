@@ -10,7 +10,7 @@ const NAV = [
     group: 'Principal',
     items: [
       { href: '/dashboard',       icon: '⊞',  label: 'Dashboard' },
-      { href: '/noah',            icon: '🤖',  label: 'NOAH IA' },
+      { href: '/recomendaciones', icon: '🤖',  label: 'NOAH IA' },
     ]
   },
   {
