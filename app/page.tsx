@@ -125,7 +125,7 @@ function AnnouncementModal({ onClose }: { onClose: () => void }) {
       <div style={{ background: '#fff', borderRadius: '20px', maxWidth: '440px', width: '100%', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.3)', animation: 'slideUp .4s cubic-bezier(.34,1.56,.64,1)' }}>
         <div style={{ background: 'linear-gradient(135deg,#1a5c3a,#0f3d26)', padding: '28px 32px', textAlign: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '14px' }}>
-            <img src="/images/logo-white.png" alt="PRAIRON" style={{ height: "28px", width: "auto", objectFit: "contain" }} /><span style={{ color: "#fff", fontSize: "17px", fontWeight: "800", letterSpacing: "-0.5px" }}>PRAIRON</span>
+            <img src="/images/logo-white.png" alt="PRAIRON" style={{ height: "28px", width: "auto", objectFit: "contain" }} />
           </div>
           <h2 style={{ color: '#fff', fontSize: '19px', fontWeight: '700', margin: '0 0 8px', lineHeight: 1.3 }}>{cfg.title}</h2>
           <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', margin: 0, lineHeight: 1.5 }}>{cfg.message}</p>
@@ -244,7 +244,6 @@ export default function HomePage() {
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '62px' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '9px', textDecoration: 'none' }}>
             <img src="/images/logo-white.png" alt="PRAIRON" style={{ height: "28px", width: "auto", objectFit: "contain" }} />
-            <span className="sora" style={{ fontSize: '16px', fontWeight: '800', color: '#fff', letterSpacing: '-0.5px' }}>PRAIRON</span>
           </Link>
           <div className="hide-mob" style={{ display: 'flex', gap: '2px' }}>
             <Link href="/soluciones" className="nav-link">Soluciones</Link>
