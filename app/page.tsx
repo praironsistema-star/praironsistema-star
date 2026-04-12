@@ -125,7 +125,7 @@ function AnnouncementModal({ onClose }: { onClose: () => void }) {
       <div style={{ background: '#fff', borderRadius: '20px', maxWidth: '440px', width: '100%', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.3)', animation: 'slideUp .4s cubic-bezier(.34,1.56,.64,1)' }}>
         <div style={{ background: 'linear-gradient(135deg,#1a5c3a,#0f3d26)', padding: '28px 32px', textAlign: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '14px' }}>
-            <PraironLogo size={28} white /><span style={{ color: '#fff', fontSize: '17px', fontWeight: '800', letterSpacing: '-0.5px' }}>PRAIRON</span>
+            <img src="/images/logo-white.png" alt="PRAIRON" style={{ height: "28px", width: "auto", objectFit: "contain" }} /><span style={{ color: "#fff", fontSize: "17px", fontWeight: "800", letterSpacing: "-0.5px" }}>PRAIRON</span>
           </div>
           <h2 style={{ color: '#fff', fontSize: '19px', fontWeight: '700', margin: '0 0 8px', lineHeight: 1.3 }}>{cfg.title}</h2>
           <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', margin: 0, lineHeight: 1.5 }}>{cfg.message}</p>
@@ -243,7 +243,7 @@ export default function HomePage() {
       <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: scrollY > 20 ? 'rgba(13,31,20,.97)' : 'transparent', backdropFilter: scrollY > 20 ? 'blur(16px)' : 'none', borderBottom: scrollY > 20 ? '0.5px solid rgba(255,255,255,.07)' : 'none', transition: 'all .3s' }}>
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '62px' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '9px', textDecoration: 'none' }}>
-            <PraironLogo size={28} white />
+            <img src="/images/logo-white.png" alt="PRAIRON" style={{ height: "28px", width: "auto", objectFit: "contain" }} />
             <span className="sora" style={{ fontSize: '16px', fontWeight: '800', color: '#fff', letterSpacing: '-0.5px' }}>PRAIRON</span>
           </Link>
           <div className="hide-mob" style={{ display: 'flex', gap: '2px' }}>
@@ -557,7 +557,7 @@ export default function HomePage() {
       {/* ═══ CTA ═══ */}
       <section style={{ padding: '100px 0', background: 'linear-gradient(160deg,#052e16,#0d1f14)' }}>
         <div className="container" style={{ textAlign: 'center' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '22px' }}><PraironLogo size={52} white /></div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '22px' }}><img src="/images/logo-white.png" alt="PRAIRON" style={{ height: "52px", width: "auto", objectFit: "contain" }} /></div>
           <h2 className="sora" style={{ fontSize: '44px', fontWeight: '800', color: '#fff', letterSpacing: '-2px', marginBottom: '14px', lineHeight: 1.05 }}>
             Empieza hoy — gratis<br />por 14 días
           </h2>
@@ -576,7 +576,7 @@ export default function HomePage() {
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '36px', marginBottom: '36px' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-                <PraironLogo size={24} white /><span className="sora" style={{ color: '#fff', fontWeight: '800', fontSize: '15px' }}>PRAIRON</span>
+                <img src="/images/logo-white.png" alt="PRAIRON" style={{ height: "24px", width: "auto", objectFit: "contain" }} /><span className="sora" style={{ color: "#fff", fontWeight: "800", fontSize: "15px" }}>PRAIRON</span>
               </div>
               <p style={{ fontSize: '12px', color: 'rgba(255,255,255,.3)', lineHeight: 1.7, maxWidth: '260px', marginBottom: '16px' }}>Plataforma agroindustrial con IA para LATAM. 16 sectores. NOAH IA. Funciona sin internet.</p>
               <div style={{ padding: '10px 12px', background: 'rgba(255,255,255,.03)', borderRadius: '8px', border: '0.5px solid rgba(255,255,255,.06)' }}>
