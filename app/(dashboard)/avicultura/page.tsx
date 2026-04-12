@@ -43,9 +43,9 @@ function AviculturaPage() {
     setLoading(true)
     try {
       const [d, h, b] = await Promise.all([
-        api.get('/poultry_houses'),
-        api.get('/poultry_houses'),
-        api.get('/poultry_batches'),
+        api.get('/avicultura/dashboard'),
+        api.get('/avicultura/galpones'),
+        api.get('/avicultura/lotes'),
       ])
       setDashboard(d.data ?? {})
       setHouses(h.data ?? [])
@@ -57,13 +57,13 @@ function AviculturaPage() {
 
   async function saveHouse(e: React.FormEvent) {
     e.preventDefault()
-          api.post('/poultry_houses', {...houseForm,capacity:parseInt(houseForm.capacity)})
+          api.post('/avicultura/galpones', {...houseForm,capacity:parseInt(houseForm.capacity)})
     setHouseModal(false); loadAll(); toastSuccess('Galpón creado')
   }
 
   async function saveBatch(e: React.FormEvent) {
     e.preventDefault()
-          api.post('/poultry_batches', {...batchForm,initial_quantity:parseInt(batchForm.initialQuantity)})
+          api.post('/avicultura/lotes', {...batchForm,initialQuantity:parseInt(batchForm.initialQuantity)})
     setBatchModal(false); loadAll(); toastSuccess('Lote creado')
   }
 
@@ -71,13 +71,13 @@ function AviculturaPage() {
     e.preventDefault()
     if (!selBatch) return
     if (recModal === 'mortality') {
-            api.post('/poultry_records', {...recForm,batch_id:selBatch.id,record_type:'mortality',quantity:parseInt(recForm.quantity)})
+            api.post(`/avicultura/lotes/${selBatch.id}/mortalidad`, {...recForm,quantity:parseInt(recForm.quantity)})
       toastSuccess('Mortalidad registrada')
     } else if (recModal === 'feed') {
-            api.post('/poultry_records', {...recForm,batch_id:selBatch.id,record_type:'feed',quantity:parseFloat(recForm.quantity),cost:recForm.cost?parseFloat(recForm.cost):null})
+            api.post(`/avicultura/lotes/${selBatch.id}/alimentacion`, {...recForm,quantity:parseFloat(recForm.quantity),cost:recForm.cost?parseFloat(recForm.cost):null})
       toastSuccess('Alimentación registrada')
     } else if (recModal === 'health') {
-            api.post('/poultry_records', {...recForm,batch_id:selBatch.id,record_type:'health'})
+            api.post(`/avicultura/lotes/${selBatch.id}/sanidad`, {...recForm})
       toastSuccess('Registro sanitario guardado')
     }
     setRecModal(null); loadAll()
@@ -86,7 +86,7 @@ function AviculturaPage() {
   async function deleteHouse(id: string, name: string) {
     const ok = await confirm({ title:'Eliminar galpón', message:`¿Eliminar "${name}"?`, danger: true, confirmText:'Eliminar' })
     if (!ok) return
-          api.patch('/poultry_houses/id', {deleted_at:new Date().toISOString()}); loadAll(); toastSuccess('Galpón eliminado')
+          api.put(`/avicultura/galpones/${houses[0]?.id}`, {deletedAt:new Date().toISOString()}); loadAll(); toastSuccess('Galpón eliminado')
   }
 
   const TABS = ['dashboard','galpones','lotes']
