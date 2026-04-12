@@ -36,8 +36,8 @@ function AcuiculturaPage() {
     setLoading(true)
     try {
       const [p, b] = await Promise.allSettled([
-        api.get('/aqua_ponds'),
-        api.get('/aqua_batches'),
+        api.get('/acuicultura/estanques'),
+        api.get('/acuicultura/ciclos'),
       ])
       if (p.status === 'fulfilled') setPonds(p.value.data ?? [])
       if (b.status === 'fulfilled') setBatches(b.value.data ?? [])
@@ -49,7 +49,7 @@ function AcuiculturaPage() {
   async function savePond(e: React.FormEvent) {
     e.preventDefault()
     try {
-            await api.post('/aqua_ponds', {...pondForm,volume:parseFloat(pondForm.volume),area:parseFloat(pondForm.area)})
+            await api.post('/acuicultura/estanques', {...pondForm,volume:parseFloat(pondForm.volume),area:parseFloat(pondForm.area)})
       setPondModal(false); loadAll(); toastSuccess('Estanque creado')
     } catch { toastError('Error al crear estanque') }
   }
@@ -57,7 +57,7 @@ function AcuiculturaPage() {
   async function saveBatch(e: React.FormEvent) {
     e.preventDefault()
     try {
-            await api.post('/aqua_batches', {...batchForm,initial_quantity:parseInt(batchForm.initialQuantity),weight_grams:parseFloat(batchForm.weightGrams)})
+            await api.post('/acuicultura/ciclos', {...batchForm,initialCount:parseInt(batchForm.initialQuantity),initialWeightG:parseFloat(batchForm.weightGrams)})
       setBatchModal(false); loadAll(); toastSuccess('Lote creado')
     } catch { toastError('Error al crear lote') }
   }
@@ -67,13 +67,13 @@ function AcuiculturaPage() {
     if (!selBatch) return
     try {
       if (recModal === 'water') {
-              await api.post('/aqua_records', {...recForm,batch_id:selBatch.id,record_type:'water'})
+              await api.post(`/acuicultura/estanques/${selBatch.pondId}/agua`, {...recForm})
         toastSuccess('Calidad de agua registrada')
       } else if (recModal === 'feed') {
-              await api.post('/aqua_records', {...recForm,batch_id:selBatch.id,record_type:'feed',feed_kg:parseFloat(recForm.feedKg),cost:recForm.cost?parseFloat(recForm.cost):null})
+              await api.post(`/acuicultura/ciclos/${selBatch.id}/alimentacion`, {...recForm,quantity:parseFloat(recForm.feedKg),cost:recForm.cost?parseFloat(recForm.cost):null})
         toastSuccess('Alimentación registrada')
       } else if (recModal === 'harvest') {
-              await api.post('/aqua_records', {...recForm,batch_id:selBatch.id,record_type:'harvest',quantity:parseInt(recForm.quantity),weight_kg:parseFloat(recForm.weightKg)})
+              await api.post(`/acuicultura/ciclos/${selBatch.id}/cosecha`, {...recForm,quantity:parseInt(recForm.quantity),totalKg:parseFloat(recForm.weightKg)})
         toastSuccess('Cosecha registrada')
       }
       setRecModal(null); loadAll()
@@ -84,7 +84,7 @@ function AcuiculturaPage() {
     const ok = await confirm({ title:'Eliminar estanque', message:`¿Eliminar "${name}"?`, danger:true, confirmText:'Eliminar' })
     if (!ok) return
     try {
-            await api.patch('/aqua_ponds/id', {deleted_at:new Date().toISOString()})
+            await api.put(`/acuicultura/estanques/${ponds[0]?.id}`, {deletedAt:new Date().toISOString()})
       loadAll(); toastSuccess('Estanque eliminado')
     } catch { toastError('Error al eliminar') }
   }

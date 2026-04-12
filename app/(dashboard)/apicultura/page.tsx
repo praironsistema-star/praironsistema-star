@@ -23,28 +23,28 @@ function ApiculturaPage() {
 
   async function loadAll() {
     setLoading(true)
-    try {       const { data } = await api.get('/hives'); setColmenas(data||[]) }
+    try {       const { data } = await api.get('/apicultura/cosechas'); setColmenas(data||[]) }
     finally { setLoading(false) }
   }
   useEffect(() => { loadAll() }, [])
 
   async function saveColmena(e: React.FormEvent) {
     e.preventDefault()
-    try {       await api.post('/hives', form); setModal(false); loadAll(); toastSuccess('Colmena registrada') }
+    try {       await api.post('/apicultura/apiarios', form); setModal(false); loadAll(); toastSuccess('Apiario registrado') }
     catch { toastError('Error al registrar colmena') }
   }
 
   async function saveRevision(e: React.FormEvent) {
     e.preventDefault()
     if (!selCol) return
-    try {       await api.post('/inspections', {...revForm,hive_id:selCol.id}); setRevModal(false); loadAll(); toastSuccess('Revisión registrada') }
+    try {       await api.post(`/apicultura/colmenas/${selCol?.id}/inspecciones`, {...revForm}); setRevModal(false); loadAll(); toastSuccess('Inspección registrada') }
     catch { toastError('Error al registrar revisión') }
   }
 
   async function deleteColmena(id: string, codigo: string) {
     const ok = await confirm({ title:'Eliminar colmena', message:`¿Eliminar colmena "${codigo}"?`, danger:true, confirmText:'Eliminar' })
     if (!ok) return
-    try {       await api.patch('/hives/id', {deleted_at:new Date().toISOString()}); loadAll(); toastSuccess('Colmena eliminada') }
+    try {       await api.put(`/apicultura/colmenas/${selCol?.id}`, {status:'muerta'}); loadAll(); toastSuccess('Colmena marcada inactiva') }
     catch { toastError('Error al eliminar') }
   }
 
