@@ -1,0 +1,233 @@
+.
+├── Dockerfile
+├── README.md
+├── app
+│   ├── (auth)
+│   │   ├── auth
+│   │   │   └── google
+│   │   │       └── success
+│   │   │           └── page.tsx
+│   │   ├── forgot-password
+│   │   │   ├── ForgotPasswordClient.tsx
+│   │   │   └── page.tsx
+│   │   ├── google
+│   │   │   └── success
+│   │   │       └── page.tsx
+│   │   ├── login
+│   │   │   ├── Login
+│   │   │   ├── LoginClient.tsx
+│   │   │   └── page.tsx
+│   │   ├── onboarding
+│   │   │   └── page.tsx
+│   │   ├── register
+│   │   │   ├── RegisterClient.tsx
+│   │   │   └── page.tsx
+│   │   └── reset-password
+│   │       ├── ResetPasswordClient.tsx
+│   │       └── page.tsx
+│   ├── (dashboard)
+│   │   ├── acuicultura
+│   │   │   └── page.tsx
+│   │   ├── alerts
+│   │   │   └── page.tsx
+│   │   ├── animals
+│   │   │   └── page.tsx
+│   │   ├── apicultura
+│   │   │   └── page.tsx
+│   │   ├── arroz
+│   │   │   └── page.tsx
+│   │   ├── avicultura
+│   │   │   └── page.tsx
+│   │   ├── benchmark
+│   │   │   └── page.tsx
+│   │   ├── cacao
+│   │   │   └── page.tsx
+│   │   ├── caficultura
+│   │   │   └── page.tsx
+│   │   ├── calendario
+│   │   │   └── page.tsx
+│   │   ├── cana
+│   │   │   └── page.tsx
+│   │   ├── certificaciones
+│   │   │   └── page.tsx
+│   │   ├── clima
+│   │   │   └── page.tsx
+│   │   ├── compras
+│   │   │   └── page.tsx
+│   │   ├── contador
+│   │   │   └── page.tsx
+│   │   ├── crops
+│   │   │   └── page.tsx
+│   │   ├── dashboard
+│   │   │   └── page.tsx
+│   │   ├── farms
+│   │   │   └── page.tsx
+│   │   ├── fitosanitario
+│   │   │   └── page.tsx
+│   │   ├── floricultura
+│   │   │   └── page.tsx
+│   │   ├── fruticultura
+│   │   │   └── page.tsx
+│   │   ├── ganaderia
+│   │   │   └── page.tsx
+│   │   ├── horticultura
+│   │   │   └── page.tsx
+│   │   ├── inventory
+│   │   │   └── page.tsx
+│   │   ├── laboratorio
+│   │   │   └── page.tsx
+│   │   ├── layout.tsx
+│   │   ├── layout.tsx.backup
+│   │   ├── maquinaria
+│   │   │   └── page.tsx
+│   │   ├── ods
+│   │   │   └── page.tsx
+│   │   ├── organica
+│   │   │   └── page.tsx
+│   │   ├── palma
+│   │   │   └── page.tsx
+│   │   ├── performance
+│   │   │   └── page.tsx
+│   │   ├── porcicultura
+│   │   │   └── page.tsx
+│   │   ├── profile
+│   │   │   └── page.tsx
+│   │   ├── recomendaciones
+│   │   │   └── page.tsx
+│   │   ├── reports
+│   │   │   └── page.tsx
+│   │   ├── roles
+│   │   │   └── page.tsx
+│   │   ├── rrhh
+│   │   │   └── page.tsx
+│   │   ├── settings
+│   │   │   └── page.tsx
+│   │   ├── tareo
+│   │   │   └── page.tsx
+│   │   ├── tasks
+│   │   │   └── page.tsx
+│   │   ├── team
+│   │   │   └── page.tsx
+│   │   ├── trazabilidad
+│   │   │   └── page.tsx
+│   │   ├── ventas
+│   │   │   └── page.tsx
+│   │   ├── vision
+│   │   │   └── page.tsx
+│   │   └── vivero
+│   │       └── page.tsx
+│   ├── (marketing)
+│   ├── demo
+│   │   └── page.tsx
+│   ├── favicon.ico
+│   ├── globals.css
+│   ├── landing
+│   ├── landing2026
+│   │   └── page.tsx
+│   ├── landing2026.tsx
+│   ├── layout.tsx
+│   ├── not-found.tsx
+│   ├── page.backup.tsx
+│   ├── page.tsx
+│   ├── page_v2_backup.tsx
+│   ├── precios
+│   │   └── page.tsx
+│   ├── privacidad
+│   │   └── page.tsx
+│   ├── responsive.css
+│   ├── seguridad
+│   │   └── page.tsx
+│   ├── soluciones
+│   │   ├── [slug]
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   └── terminos
+│       └── page.tsx
+├── arquitectura_agro.txt
+├── components
+│   ├── IndustryGuard.tsx
+│   ├── landing
+│   │   └── SectorPage.tsx
+│   ├── layout
+│   │   ├── MobileNav.tsx
+│   │   ├── PublicNav.tsx
+│   │   └── Sidebar.tsx
+│   └── ui
+│       ├── AnimalsSkeleton.tsx
+│       ├── AuthGuard.tsx
+│       ├── Confirm.tsx
+│       ├── FarmsSkeleton.tsx
+│       ├── GlobalSearch.tsx
+│       ├── InventorySkeleton.tsx
+│       ├── LanguageSelector.tsx
+│       ├── LanguageSwitcher.tsx
+│       ├── NohAssistant.tsx
+│       ├── NohAssistant.tsx.backup
+│       ├── NohAssistant.tsx.backup2
+│       ├── NotificationBell.tsx
+│       ├── OfflineIndicator.tsx
+│       ├── PWARegister.tsx
+│       ├── PosthogProvider.tsx
+│       ├── Skeleton.tsx
+│       ├── TasksSkeleton.tsx
+│       ├── ThemeInit.tsx
+│       ├── ThemeToggle.tsx
+│       └── Toast.tsx
+├── eslint.config.mjs
+├── hooks
+│   ├── useIndustry.ts
+│   ├── useOfflineSync.ts
+│   └── useRole.ts
+├── i18n
+│   └── request.ts
+├── i18n.ts
+├── lib
+│   ├── analytics.ts
+│   ├── api.ts
+│   ├── api.ts.save
+│   ├── auth.ts
+│   ├── i18n.tsx
+│   ├── notifications.ts
+│   ├── offlineDB.ts
+│   ├── sectores.ts
+│   └── supabase.ts
+├── messages
+│   ├── en.json
+│   ├── es.json
+│   └── pt.json
+├── middleware.ts
+├── next-env.d.ts
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── public
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── icons
+│   │   ├── icon-128.png
+│   │   ├── icon-144.png
+│   │   ├── icon-152.png
+│   │   ├── icon-192.png
+│   │   ├── icon-384.png
+│   │   ├── icon-512.png
+│   │   ├── icon-72.png
+│   │   └── icon-96.png
+│   ├── images
+│   │   ├── icon-dark.png
+│   │   ├── icon-green.png
+│   │   ├── logo-dark.png
+│   │   ├── logo-white.png
+│   │   ├── noh-idle.png
+│   │   ├── noh-thinking.png
+│   │   ├── noh-tip.png
+│   │   └── noh-welcome.png
+│   ├── manifest.json
+│   ├── next.svg
+│   ├── sw.js
+│   ├── vercel.svg
+│   └── window.svg
+├── tsconfig.json
+└── tsconfig.tsbuildinfo
+
+79 directories, 152 files

@@ -7,6 +7,7 @@ import ThemeToggle from '@/components/ui/ThemeToggle';
 import LanguageSelector from '@/components/ui/LanguageSelector';
 import ThemeInit from '@/components/ui/ThemeInit';
 import AuthGuard from '@/components/ui/AuthGuard';
+import { WakeUpPing } from '@/components/ui/WakeUpPing';
 
 export const dynamic = 'force-dynamic'
 
@@ -35,6 +36,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {children}
         </main>
       </div>
+      <WakeUpPing />
       <div data-noah-panel><NohAssistant /></div>
     </div>
   )
