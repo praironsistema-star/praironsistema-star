@@ -272,7 +272,7 @@ export default function HomePage() {
                 <span className="glow" />Plataforma agroindustrial · 16 sectores · LATAM
               </div>
               <h1 className="sora" style={{ fontSize: '54px', fontWeight: '800', lineHeight: 1.05, letterSpacing: '-2.5px', color: '#fff', marginBottom: '20px' }}>
-                El sistema que<br />el agro colombiano<br /><span style={{ color: '#4ade80' }}>necesitaba.</span>
+                El sistema que<br />la agroindustria<br /><span style={{ color: '#4ade80' }}>mundial necesita.</span>
               </h1>
               <p style={{ fontSize: '17px', color: 'rgba(255,255,255,.65)', lineHeight: 1.7, marginBottom: '32px', maxWidth: '430px' }}>
                 Un solo sistema para toda tu operación. Con <strong style={{ color: '#fff', fontWeight: '600' }}>NOAH</strong>, la IA agroindustrial que conoce tu finca y trabaja contigo 24/7.
