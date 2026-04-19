@@ -297,5 +297,12 @@ export default function Sidebar() {
       </div>
 
     </aside>
+    <style>{`
+      @media (max-width: 768px) {
+        [data-sidebar] { display: none !important; }
+        [data-main-content] { padding-bottom: 64px; }
+        [data-noah-panel] { bottom: 64px !important; }
+      }
+    `}</style>
   )
 }

@@ -1,21 +1,19 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
-import { useIndustry } from '@/hooks/useIndustry';
-
-const BASE_ITEMS = [
-  { href: '/dashboard', icon: '⊞', label: 'Inicio' },
-  { href: '/tasks',     icon: '✓', label: 'Tareas' },
-  { href: '/alerts',   icon: '⚡', label: 'Alertas' },
-  { href: '/reports',  icon: '📊', label: 'Reportes' },
-  { href: '/profile',  icon: '👤', label: 'Perfil' },
-];
+import { useI18n } from '@/lib/i18n';
 
 export function MobileNav() {
   const pathname = usePathname();
   const router = useRouter();
-  const { isLoaded } = useIndustry();
+  const { t } = useI18n();
 
-  if (!isLoaded) return null;
+  const BASE_ITEMS = [
+    { href: '/dashboard', icon: '⊞', label: t('nav.dashboard') },
+    { href: '/tasks',     icon: '✅', label: t('nav.tasks') },
+    { href: '/alerts',    icon: '🔔', label: t('nav.alerts') },
+    { href: '/reports',   icon: '📊', label: t('nav.reports') },
+    { href: '/profile',   icon: '👤', label: t('nav.profile') },
+  ];
 
   return (
     <nav style={{
@@ -47,12 +45,13 @@ export function MobileNav() {
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
-                color: active ? '#036446' : 'var(--text-muted, #888)',
+                color: active ? 'var(--color-primary, #036446)' : 'var(--text-muted, #888)',
                 fontSize: 10,
                 fontWeight: active ? 600 : 400,
+                minWidth: 48,
               }}
             >
-              <span style={{ fontSize: 20 }}>{item.icon}</span>
+              <span style={{ fontSize: 22 }}>{item.icon}</span>
               <span>{item.label}</span>
             </button>
           );

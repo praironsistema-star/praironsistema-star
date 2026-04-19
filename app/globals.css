@@ -63,3 +63,10 @@ html, body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
 ::selection { background: var(--accent-soft); color: var(--accent); }
+
+@media (max-width: 768px) {
+  [data-sidebar] { display: none !important; }
+  [data-main-content] { padding-bottom: 64px !important; }
+  [data-noah-panel] { bottom: 64px !important; }
+  header { padding: 0 16px !important; }
+}
