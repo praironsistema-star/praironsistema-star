@@ -1,8 +1,10 @@
 'use client'
 import { useState } from 'react'
+import { useI18n } from '@/lib/i18n'
 import api from '@/lib/api'
 
 export default function BenchmarkPage() {
+  const { t } = useI18n()
   const [loading, setLoading] = useState(false)
   const [data,    setData]    = useState<any>(null)
   const [error,   setError]   = useState('')
@@ -12,7 +14,7 @@ export default function BenchmarkPage() {
     try {
       const r = { data: { metrics: [] } } // pendiente edge function
       setData(r.data ?? [])
-    } catch { setError('Error cargando benchmark') }
+    } catch { setError(t('benchmark.error')) }
     finally { setLoading(false) }
   }
 
@@ -27,7 +29,7 @@ export default function BenchmarkPage() {
         </div>
         <button onClick={load} disabled={loading}
           style={{ fontSize: '12px', padding: '8px 18px', background: loading ? '#e5e5e3' : '#036446', color: loading ? '#9b9b97' : 'white', border: 'none', borderRadius: '6px', cursor: loading ? 'not-allowed' : 'pointer', fontWeight: '500' }}>
-          {loading ? 'Calculando...' : data ? '🔄 Actualizar' : '📊 Ver benchmark'}
+          {loading ? t('benchmark.calculating') : data ? '🔄 Actualizar' : '📊 Ver benchmark'}
         </button>
       </div>
 
