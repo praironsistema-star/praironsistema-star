@@ -52,10 +52,10 @@ const NOAH_MSGS: Record<number,string> = {
 const STEPS = ['Cuenta','Industria','Sub-sector','Operación','Tamaño','Equipo','Confirmar']
 
 const IND_MAP: Record<string,string> = {
-  GANADERO:'ganadero',CAFE:'agricultura',AVICOLA:'avicola',PALMA:'palma',
-  CACAO:'agricultura',ACUICULTURA:'acuicultura',APICULTURA:'apicultura',
-  ARROZ:'agricultura',CANA:'agricultura',HORTICULTURA:'agricultura',
-  LACTEO:'ganadero',MIXTO:'mixta',
+  GANADERO:'GANADERIA',CAFE:'CAFE',AVICOLA:'AVICULTURA',PALMA:'PALMA',
+  CACAO:'CACAO',ACUICULTURA:'ACUICULTURA',APICULTURA:'APICULTURA',
+  ARROZ:'ARROZ',CANA:'CANA',HORTICULTURA:'HORTICULTURA',
+  LACTEO:'GANADERIA',MIXTO:'MIXTO',
 }
 
 export default function RegisterPage() {
@@ -106,11 +106,12 @@ export default function RegisterPage() {
         method:'POST', headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
           companyName: form.companyName||`${form.adminName.split(' ')[0]}'s Farm`,
-          typeOfFarm:  IND_MAP[form.industry]||'mixta',
+          typeOfFarm:  IND_MAP[form.industry]||'MIXTO',
           location:    form.location,
           adminName:   form.adminName,
           adminEmail:  form.adminEmail,
           adminPassword: form.adminPassword,
+          industryModules: form.industry ? [IND_MAP[form.industry]||'MIXTO'] : ['MIXTO'],
         }),
       })
       if(!r1.ok){ const e=await r1.json(); throw new Error(e.message||'Error al crear la cuenta') }
@@ -120,8 +121,13 @@ export default function RegisterPage() {
         body:JSON.stringify({email:form.adminEmail,password:form.adminPassword}),
       })
       const {access_token, user} = await r2.json()
+      const industryModule = IND_MAP[form.industry]||'MIXTO'
       localStorage.setItem('prairon_token', access_token)
-      localStorage.setItem('prairon_user', JSON.stringify({...user,industryType:form.industry}))
+      localStorage.setItem('prairon_user', JSON.stringify({
+        ...user,
+        industryType: form.industry,
+        industryModules: user.industryModules?.length ? user.industryModules : [industryModule],
+      }))
 
       await fetch(`${API}/noh/setup`,{
         method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${access_token}`},
