@@ -1,4 +1,5 @@
 'use client';
+import { useI18n } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 
 const TYPE_COLOR: Record<string, { bg: string; text: string; label: string }> = {
@@ -12,6 +13,7 @@ const TYPE_COLOR: Record<string, { bg: string; text: string; label: string }> = 
 const COUNTRY_FLAG: Record<string, string> = { CO: '🇨🇴', VE: '🇻🇪', INT: '🌍' };
 
 export default function CertificacionesPage() {
+  const { t } = useI18n()
   const [certs, setCerts]         = useState<any[]>([]);
   const [enrollments, setEnrollments] = useState<any[]>([]);
   const [tab, setTab]             = useState<'catalogo' | 'mis'>('catalogo');

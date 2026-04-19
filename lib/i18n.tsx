@@ -123,4 +123,6 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useI18n() { return useContext(I18nContext); }
+export function useI18n() { return useContext(I18nContext); }    benchmark: { title:'Benchmark regional', subtitle:'Compara tu operación con el promedio anónimo de empresas en PRAIRON', load:'📊 Ver benchmark', refresh:'🔄 Actualizar', calculating:'Calculando...', no_data:'Ejecuta el benchmark para ver cómo te comparas con otras operaciones de tu sector.', error:'Error cargando benchmark' },
+    clima: { title:'Clima agrícola', subtitle:'Condiciones meteorológicas para tu región', forecast:'Pronóstico 7 días', recommendations:'Recomendaciones agrícolas', no_data:'Selecciona una ciudad para ver el clima', loading:'Cargando clima...' },
+    

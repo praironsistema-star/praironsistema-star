@@ -1,4 +1,5 @@
 'use client';
+import { useI18n } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 
 const SEVERITY_COLOR: Record<string, string> = {
@@ -19,6 +20,7 @@ const TYPE_EMOJI: Record<string, string> = {
 };
 
 export default function FitosanitarioPage() {
+  const { t } = useI18n()
   const [pests, setPests]           = useState<any[]>([]);
   const [diagnostics, setDiagnostics] = useState<any[]>([]);
   const [tab, setTab]               = useState<'pests' | 'diagnostics' | 'new'>('pests');
